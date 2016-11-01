@@ -47,23 +47,21 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.openntf.xsp.sdk.Activator;
-import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
+import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
 
 /**
  * @author dtaieb
  * @author doconnor
  * 
  *         A menu/toolbar action that allows the user to create a plug-in
- *         project
- *         that contains and exports the packages of the Notes Java Api plugin
- *         which
- *         This plugin must be included in the workspace in order to perform
- *         development
- *         of XPages extension library plug-ins
+ *         project that contains and exports the packages of the Notes Java Api
+ *         plugin which This plugin must be included in the workspace in order
+ *         to perform development of XPages extension library plug-ins
  *
  */
 public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate {
 	private static final String JAVA_API_PROJECT_NAME = "com.ibm.notes.java.api";
+
 	private IWorkbenchWindow window;
 
 	/**
@@ -73,9 +71,8 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	}
 
 	/**
-	 * The action has been activated. The argument of the
-	 * method represents the 'real' action sitting
-	 * in the workbench UI.
+	 * The action has been activated. The argument of the method represents the
+	 * 'real' action sitting in the workbench UI.
 	 * 
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
@@ -96,7 +93,10 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 				link.addSelectionListener(new SelectionListener() {
 					/*
 					 * (non-Javadoc)
-					 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+					 * 
+					 * @see
+					 * org.eclipse.swt.events.SelectionListener#widgetSelected(
+					 * org.eclipse.swt.events.SelectionEvent)
 					 */
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -143,7 +143,7 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	 * @return
 	 */
 	private String getBinDirectoryFromPreferenceStore() {
-		return XPagesSDKPreferences.getDominoInstall();
+		return NotesDominoPlatformFactory.getDominoHttpPlatform().getRemoteInstallFolder();
 	}
 
 	/**
@@ -177,7 +177,10 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 					new String[] { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL }, 0) {
 				/*
 				 * (non-Javadoc)
-				 * @see org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
+				 * 
+				 * @see
+				 * org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.
+				 * eclipse.swt.widgets.Composite)
 				 */
 				@Override
 				protected Control createCustomArea(Composite parent) {
@@ -266,8 +269,8 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	private void copyFile(File srcFile, IFile target, IProgressMonitor progressMonitor) throws CoreException,
-			IOException {
+	private void copyFile(File srcFile, IFile target, IProgressMonitor progressMonitor)
+			throws CoreException, IOException {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(srcFile);
@@ -354,10 +357,9 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	}
 
 	/**
-	 * Selection in the workbench has been changed. We
-	 * can change the state of the 'real' action here
-	 * if we want, but this can only happen after
-	 * the delegate has been created.
+	 * Selection in the workbench has been changed. We can change the state of
+	 * the 'real' action here if we want, but this can only happen after the
+	 * delegate has been created.
 	 * 
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */
@@ -366,8 +368,8 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	}
 
 	/**
-	 * We can use this method to dispose of any system
-	 * resources we previously allocated.
+	 * We can use this method to dispose of any system resources we previously
+	 * allocated.
 	 * 
 	 * @see IWorkbenchWindowActionDelegate#dispose
 	 */
@@ -377,8 +379,8 @@ public class CreateNotesJavaApiProject implements IWorkbenchWindowActionDelegate
 	}
 
 	/**
-	 * We will cache window object in order to
-	 * be able to provide parent shell for the message dialog.
+	 * We will cache window object in order to be able to provide parent shell
+	 * for the message dialog.
 	 * 
 	 * @see IWorkbenchWindowActionDelegate#init
 	 */
