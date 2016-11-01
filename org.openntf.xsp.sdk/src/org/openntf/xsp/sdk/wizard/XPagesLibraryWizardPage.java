@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 @SuppressWarnings("restriction")
 public class XPagesLibraryWizardPage extends NewClassWizardPage {
-	private static final String PAGE_NAME = "NewXspLibraryWizardPage";
+
 	private SelectionButtonDialogFieldGroup StubsButtonPlaceHolder;
 
 	public XPagesLibraryWizardPage(IStructuredSelection paramIStructuredSelection) {

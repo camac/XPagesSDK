@@ -14,15 +14,12 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
@@ -53,7 +50,7 @@ public class XPagesLibraryPluginWizard extends NewPluginTemplateWizard {
 
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			String name = delta.getResource().getName();
-			if (("MANIFEST.MF".equals(name)) && (1 == delta.getKind()) && (!(this.isDone))) {
+			if ((MANIFEST_FILE.equals(name)) && (1 == delta.getKind()) && (!(this.isDone))) {
 				this.isDone = true;
 				IWorkspace ws = ResourcesPlugin.getWorkspace();
 				ws.removeResourceChangeListener(this.listener);
@@ -72,7 +69,7 @@ public class XPagesLibraryPluginWizard extends NewPluginTemplateWizard {
 					try {
 						String line = reader.readLine();
 						while (line != null) {
-							String result = line + "\r\n";
+							String result = line + NL;
 							if (" org.eclipse.core.runtime,".equals(line)) {
 								result = "Require-Bundle: com.ibm.xsp.core\r\n, org.eclipse.code.runtime\r\n";
 							}
@@ -96,15 +93,15 @@ public class XPagesLibraryPluginWizard extends NewPluginTemplateWizard {
 			}
 		}
 
-		private void scheduleJob(IFile file, ByteArrayOutputStream baos) {
-			IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace().getRuleFactory();
-			ISchedulingRule rule = ruleFactory.createRule(file);
-			String jobName = NLS.bind("Modifing {0}", "MANIFEST.MF");
-			// Job job = new XPagesLibraryPluginWizard.1(this, jobName, baos, file);
-			//
-			// job.setRule(rule);
-			// job.schedule(1000L);
-		}
+//		private void scheduleJob(IFile file, ByteArrayOutputStream baos) {
+//			IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace().getRuleFactory();
+//			ISchedulingRule rule = ruleFactory.createRule(file);
+//			String jobName = NLS.bind("Modifing {0}", "MANIFEST.MF");
+//			// Job job = new XPagesLibraryPluginWizard.1(this, jobName, baos, file);
+//			//
+//			// job.setRule(rule);
+//			// job.schedule(1000L);
+//		}
 	}
 
 	@Override

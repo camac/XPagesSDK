@@ -8,10 +8,6 @@ import org.openntf.xsp.sdk.Activator;
 import org.osgi.service.prefs.Preferences;
 
 public class XPagesSDKPreferences {
-	@Deprecated
-	public static enum Target {
-		NOTES, DOMINO, DOTS
-	}
 
 	// Removed default values because every environment are different from another.
 	// Defaults are just making things more difficult. By default, the SDK should not validate anything.

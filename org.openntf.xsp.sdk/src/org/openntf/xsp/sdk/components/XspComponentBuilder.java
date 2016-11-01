@@ -1,13 +1,9 @@
 package org.openntf.xsp.sdk.components;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
@@ -17,10 +13,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -33,7 +27,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.internal.core.JavaProject;
-import org.eclipse.jface.text.Document;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -46,16 +39,18 @@ import org.osgi.framework.Version;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+@SuppressWarnings("deprecation")
 public class XspComponentBuilder extends IncrementalProjectBuilder {
-	private static final Logger log = Logger.getLogger(XspComponentBuilder.class.getName());
+//	private static final Logger log = Logger.getLogger(XspComponentBuilder.class.getName());
 
 	private JavaProject javaProject;
-	private ITypeBinding uiComponentTypeBinding;
+//	private ITypeBinding uiComponentTypeBinding;
 
 	public XspComponentBuilder() {
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked"})
 	@Override
 	protected IProject[] build(int arg0, Map arg1, IProgressMonitor arg2) throws CoreException {
 		// IWorkbench workbench = PlatformUI.getWorkbench();
@@ -128,7 +123,7 @@ public class XspComponentBuilder extends IncrementalProjectBuilder {
 			PackageAdmin packageAdmin = (PackageAdmin) ctx.getService(ref);
 			// status = new Status(Status.WARNING, Activator.PLUGIN_ID, "PackageAdmin " + packageAdmin.getClass().getName());
 			// Activator.getDefault().getLog().log(status);
-			Bundle[] b = { ctx.getBundle() };
+			// Bundle[] b = { ctx.getBundle() };
 			// packageAdmin.resolveBundles(reqBundles.toArray(b));
 			for (Bundle bundle : reqBundles) {
 				try {
@@ -156,8 +151,8 @@ public class XspComponentBuilder extends IncrementalProjectBuilder {
 			ExportedPackage ep = packageAdmin.getExportedPackage("javax.faces.component");
 			Bundle jsfCore = ep.getExportingBundle();
 			uic = jsfCore.loadClass("javax.faces.component.UIComponent");
-			InputStream uicStream = uic.getResourceAsStream("javax.faces.component.UIComponent".replace('.', '/') + ".class");
-			Enumeration<URL> e = jsfCore.findEntries("/", "UIComponent" + javaProject.SUFFIX_STRING_class, true);
+			// InputStream uicStream = uic.getResourceAsStream("javax.faces.component.UIComponent".replace('.', '/') + ".class");
+			// Enumeration<URL> e = jsfCore.findEntries("/", "UIComponent" + JavaProject.SUFFIX_STRING_class, true);
 			//
 			// if (e.hasMoreElements()) {
 			// URL url = e.nextElement();
@@ -180,16 +175,16 @@ public class XspComponentBuilder extends IncrementalProjectBuilder {
 			for (IPackageFragment mypackage : packages) {
 				if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
 					for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
-						Document doc = new Document(unit.getSource());
-						IType[] allTypes = unit.getAllTypes();
-						for (IType type : allTypes) {
-							IMethod[] methods = type.getMethods();
-							for (IMethod method : methods) {
-
-							}
-						}
+						// Document doc = new Document(unit.getSource());
+//						IType[] allTypes = unit.getAllTypes();
+//						for (IType type : allTypes) {
+//							IMethod[] methods = type.getMethods();
+//							for (IMethod method : methods) {
+//
+//							}
+//						}
 						parser.setSource(unit);
-						CompilationUnit cunit = (CompilationUnit) parser.createAST(null);
+//						CompilationUnit cunit = (CompilationUnit) parser.createAST(null);
 						ClassVisitor cVisitor = new ClassVisitor();
 						// cunit.accept(cVisitor);
 						for (TypeDeclaration td : cVisitor.getClasses()) {
@@ -268,6 +263,7 @@ public class XspComponentBuilder extends IncrementalProjectBuilder {
 
 		@Override
 		public boolean visit(FieldDeclaration node) {
+			@SuppressWarnings("unchecked")
 			List<IExtendedModifier> mods = node.modifiers();
 			boolean add = true;
 			for (IExtendedModifier mod : mods) {
