@@ -6,7 +6,7 @@ import org.eclipse.jdt.internal.launching.StandardVM;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
+import org.openntf.xsp.sdk.preferences.OldPreferences;
 
 public class XPagesVMSetup {
 	public final static String NOTES_VM_ID = "org.openntf.xsp.notes.jre";
@@ -24,7 +24,7 @@ public class XPagesVMSetup {
 	public static void setupJRE() {
 		// check that the appropriate JRE is configured for this version of Notes
 		// System.out.println("JRE Setup Activated!");
-		String jvmPath = XPagesSDKPreferences.getJvmPath();
+		String jvmPath = OldPreferences.getJvmPath();
 
 		String vmID = NOTES_VM_ID;
 		IVMInstallType installType = JavaRuntime.getVMInstallType("org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType");
@@ -41,7 +41,7 @@ public class XPagesVMSetup {
 	}
 
 	@SuppressWarnings("restriction")
-	public static void setupJRE(String jvmPath) {
+	public static void setupNotesJRE(String jvmPath) {
 		// check that the appropriate JRE is configured for this version of Notes
 		// System.out.println("JRE Setup Activated!");
 		String vmID = NOTES_VM_ID;

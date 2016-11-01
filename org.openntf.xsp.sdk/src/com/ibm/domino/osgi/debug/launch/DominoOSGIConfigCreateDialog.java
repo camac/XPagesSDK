@@ -19,20 +19,17 @@ import java.text.MessageFormat;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormText;
-import org.openntf.xsp.sdk.Activator;
+import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
 
 /**
@@ -43,7 +40,8 @@ import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
  *
  */
 public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
-	private DominoOSGIConfig config;
+	private final DominoOSGIConfig config;
+	private final INotesDominoPlatform targetPlatform;
 	private Text dataDirectoryText;
 	private Text binDirectoryText;
 	private Combo profileCombo;
@@ -55,6 +53,7 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 		super(parent);
 
 		this.config = config;
+		this.targetPlatform = config.getTargetPlatform();
 	}
 
 	@Override
@@ -66,29 +65,31 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite top = (Composite) super.createDialogArea(parent);
-
 		Composite container = new Composite(top, SWT.NULL);
-		container.setLayout(new GridLayout(3, false));
+
+		container.setLayout(new GridLayout(2, false));
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
 		FormText header = new FormText(container, SWT.WRAP);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 3;
+		gd.horizontalSpan = 2;
 		header.setLayoutData(gd);
 		header.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
 		new Label(container, SWT.NULL).setText("Domino Bin Directory: ");
 		binDirectoryText = new Text(container, SWT.BORDER | SWT.READ_ONLY);
 		binDirectoryText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		createBrowseButton(container, binDirectoryText);
-
+		binDirectoryText.setEditable(false);
+		
 		new Label(container, SWT.NULL).setText("Domino Data Directory: ");
 		dataDirectoryText = new Text(container, SWT.BORDER | SWT.READ_ONLY);
 		dataDirectoryText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		createBrowseButton(container, dataDirectoryText);
+		dataDirectoryText.setEditable(false);
 
 		String[] profiles = config.getProfiles();
 		if (profiles != null && profiles.length > 0) {
-			String prefProfile = Activator.getDefault().getPreferenceStore().getString(PREF_PROFILE);
+			String prefProfile = XPagesSDKPreferences.getPreferenceString(PREF_PROFILE, null);
+
 			new Label(container, SWT.NULL).setText("Profile");
 			profileCombo = new Combo(container, SWT.BORDER);
 			profileCombo.setItems(profiles);
@@ -101,18 +102,27 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 		getShell().setText("IBM Lotus Domino Debug Plugin");
 		setTitle("Create Domino OSGI PDE Configuration");
 		setMessage("This launch configuration doesn't actually launch the Domino OSGI Framework.\n"
-				+ "It creates and sets up the OSGi configuration that will be run the next time you run the http task on your domino server\n");
+				+ "It creates and sets up the OSGi configuration that will be run "
+				+ "the next time you run the http task on your domino server\n");
 
-		String prefBinValue = XPagesSDKPreferences.getDominoInstall();
-		String prefDataValue = XPagesSDKPreferences.getDominoData();
+		String prefBinValue = targetPlatform.getRemoteInstallFolder();
+		String prefDataValue = targetPlatform.getRemoteDataFolder();
+
 		binDirectoryText.setText(prefBinValue);
 		dataDirectoryText.setText(prefDataValue);
+		
 		updateControls();
 
 		header.setText(
 				MessageFormat
-						.format("<form><p><b>Information:</b><br/>To use this configuration the Domino server&apos;s <b>HTTP task must be restarted</b>. In order to debug the plug-ins in this workspace<br/>the Domino server must be running in \"debug mode\" and a separate \"Remote Java Application\" debug configuration must<br/>be created and launched. To start the Domino OSGI framework normally,\nfirst delete the pde.launch.ini file located in<br/>the {0} directory and then restart the HTTP task.</p></form>",
-								config.getWorkspacePath()), true, false);
+						.format("<form><p><b>Information:</b><br/>To use this configuration the Domino server&apos;s "
+								+ "<b>HTTP task must be restarted</b>. In order to debug the plug-ins in this workspace<br/>"
+								+ "the Domino server must be running in \"debug mode\" and a separate \"Remote Java Application\" "
+								+ "debug configuration must<br/>be created and launched. To start the Domino OSGI framework normally,\n"
+								+ "first delete the pde.launch.ini file located in<br/>"
+								+ "the {0} (or related profile) directory and then restart the HTTP task.</p></form>",
+								targetPlatform.getLocalWorkspaceFolder()), true, false);
+
 		return top;
 	}
 
@@ -123,28 +133,10 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 			String selectedProfile = profileCombo.getText();
 			if (selectedProfile != null && selectedProfile.length() > 0) {
 				config.setProfile(selectedProfile);
-				Activator.getDefault().getPreferenceStore().setValue(PREF_PROFILE, selectedProfile);
+				XPagesSDKPreferences.setPreferenceString(PREF_PROFILE, selectedProfile);
 			}
 		}
 		super.okPressed();
-	}
-
-	private Button createBrowseButton(Composite container, final Text pathText) {
-		Button browseBtn = new Button(container, SWT.PUSH);
-		browseBtn.setText("Browse...");
-		browseBtn.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				DirectoryDialog dirDlg = new DirectoryDialog(getShell());
-				String path = dirDlg.open();
-				if (path != null) {
-					pathText.setText(path);
-					updateControls();
-				}
-			}
-		});
-
-		return browseBtn;
 	}
 
 	/**
@@ -154,22 +146,7 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 		try {
 			setErrorMessage(null);
 			setOKEnabled(true);
-			config.setDirectory(binDirectoryText.getText(), dataDirectoryText.getText());
-			// if (config.getDominoBinPath() != null &&
-			// config.getDominoBinPath().length() > 0) {
-			// Activator.getDefault().getPreferenceStore().setValue(PREF_DOMINO_BIN_DIR,
-			// config.getDominoBinPath());
-			// }
-			// if (config.getDominoDataPath() != null &&
-			// config.getDominoDataPath().length() > 0) {
-			// Activator.getDefault().getPreferenceStore().setValue(PREF_DOMINO_DATA_DIR,
-			// config.getDominoDataPath());
-			// }
 			config.isValid();
-
-			// Make sure the controls are up to date
-			binDirectoryText.setText(config.getDominoBinPath());
-			dataDirectoryText.setText(config.getDominoDataPath());
 		} catch (Throwable e) {
 			setErrorMessage(e.getMessage());
 			setOKEnabled(false);

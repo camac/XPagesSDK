@@ -15,6 +15,7 @@ package com.ibm.domino.osgi.debug.launch;
 import java.util.HashSet;
 
 import org.openntf.xsp.sdk.Activator;
+import org.openntf.xsp.sdk.platform.Target;
 
 /**
  * @author dtaieb
@@ -29,20 +30,6 @@ public class DotsLaunchConfiguration extends AbstractDominoOSGILaunchConfigurati
 	 * 
 	 */
 	public DotsLaunchConfiguration() {
-	}
-
-	@Override
-	protected String getWorkspaceRelativePath() {
-		if (selectedProfile != null) {
-			return "domino/workspace-" + selectedProfile.toLowerCase();
-		}
-		return "domino/workspace-dots"; // Default
-
-	}
-
-	@Override
-	protected String getOSGIDirectoryName() {
-		return "osgi-dots";
 	}
 
 	@Override
@@ -98,6 +85,11 @@ public class DotsLaunchConfiguration extends AbstractDominoOSGILaunchConfigurati
 	@Override
 	public String getName() {
 		return "Domino tasklet Framework (dots)";
+	}
+
+	@Override
+	protected Target getTarget() {
+		return Target.DOMINO_DOTS;
 	}
 
 }

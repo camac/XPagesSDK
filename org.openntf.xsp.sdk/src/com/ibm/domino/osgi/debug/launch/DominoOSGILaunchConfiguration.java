@@ -15,7 +15,7 @@
  */
 package com.ibm.domino.osgi.debug.launch;
 
-
+import org.openntf.xsp.sdk.platform.Target;
 
 /**
  * @author dtaieb
@@ -27,16 +27,6 @@ public class DominoOSGILaunchConfiguration extends AbstractDominoOSGILaunchConfi
 	 * 
 	 */
 	public DominoOSGILaunchConfiguration() {
-	}
-	
-	@Override
-	protected String getWorkspaceRelativePath() {
-		return "domino/workspace";
-	}
-	
-	@Override
-	protected String getOSGIDirectoryName() {
-		return "osgi";
 	}
 	
 	@Override
@@ -60,4 +50,10 @@ public class DominoOSGILaunchConfiguration extends AbstractDominoOSGILaunchConfi
     public String getName() {
         return "Domino OSGi Framework";
     }
+
+	@Override
+	protected Target getTarget() {
+		return Target.DOMINO_HTTP;
+	}
+
 }
