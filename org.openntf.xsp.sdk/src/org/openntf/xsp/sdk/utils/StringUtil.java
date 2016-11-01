@@ -1,5 +1,5 @@
  /*
- * © Copyright IBM Corp. 2012
+ * ï¿½ Copyright IBM Corp. 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package com.ibm.domino.osgi.debug.utils;
+package org.openntf.xsp.sdk.utils;
 
 /**
  * @author dtaieb
@@ -37,4 +37,14 @@ public class StringUtil {
 	    return test == null ? "" : test;
 	}
 
+	public static String prunePath(String path) {
+		if (!StringUtil.isEmpty(path)) {
+			if (path.endsWith("/") || path.endsWith("\\")) {
+				return path.substring(0, path.length() - 1);
+			}
+		}
+		return path;
+	}
+
+	
 }

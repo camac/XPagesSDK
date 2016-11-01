@@ -1,11 +1,17 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.openntf.xsp.sdk;singleton:=true
-Export-Package: com.ibm.domino.osgi.debug.actions,com.ibm.domino.osgi.
- debug.launch,com.ibm.domino.osgi.debug.preferences,com.ibm.domino.osg
- i.debug.utils,org.openntf.xsp.sdk,org.openntf.xsp.sdk.components,org.
- openntf.xsp.sdk.exceptions,org.openntf.xsp.sdk.jre,org.openntf.xsp.sd
- k.launcher,org.openntf.xsp.sdk.preferences,org.openntf.xsp.sdk.templa
- tes,org.openntf.xsp.sdk.utils,org.openntf.xsp.sdk.wizard
+Export-Package: com.ibm.domino.osgi.debug.actions,
+ com.ibm.domino.osgi.debug.launch,
+ com.ibm.domino.osgi.debug.preferences,
+ org.openntf.xsp.sdk,
+ org.openntf.xsp.sdk.components,
+ org.openntf.xsp.sdk.exceptions,
+ org.openntf.xsp.sdk.jre,
+ org.openntf.xsp.sdk.launcher,
+ org.openntf.xsp.sdk.preferences,
+ org.openntf.xsp.sdk.templates,
+ org.openntf.xsp.sdk.utils,
+ org.openntf.xsp.sdk.wizard
 Bundle-Name: XPages SDK
 Bundle-Version: 1.3.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,org.eclipse.ui,org.eclipse.pd
