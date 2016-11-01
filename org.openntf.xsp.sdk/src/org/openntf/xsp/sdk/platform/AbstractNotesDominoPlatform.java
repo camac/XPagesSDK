@@ -1,12 +1,20 @@
 package org.openntf.xsp.sdk.platform;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKError;
+import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
 
 public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatform {
 
@@ -47,7 +55,7 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
 	public String getLocalDataFolder() {
 		return getNotesIniProperty(INIVAR_DATAFOLDER, "");
 	}
-
+	
 	private static void loadNotesIniVars(String fileLocation, Properties props) throws IOException {
 		// TODO Error handling
 		BufferedReader br = null;
@@ -78,4 +86,47 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
 
 	}
 
+	protected String getRcpBaseFolderPrefix() {
+		return "com.ibm.rcp.base_";
+	}
+
+	@Override
+	public String getRcpBase() throws Exception {
+		String rcpBaseFolder = findRcpBaseFolder();
+		if (rcpBaseFolder == null) {
+			IStatus status = new Status(Status.INFO, Activator.PLUGIN_ID, "Unable to find rcpBaseFolder!");
+			Activator.getDefault().getLog().log(status);
+			throw new XPagesSDKException("Unable to find rcpBaseFolder!");
+		}
+		return rcpBaseFolder.replace('\\', '/');
+	}
+	
+	protected String findRcpBaseFolder() throws Exception {
+		IPath rcpPluginPath = new Path(getRemoteRcpTargetFolder() + "/plugins");
+		File rcp = new File(rcpPluginPath.toOSString());
+		final String rcpBasePrefix = getRcpBaseFolderPrefix();
+
+		if(rcp.isDirectory()) {
+			File[] baseFolders = rcp.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.startsWith(rcpBasePrefix);
+				}
+			});
+			
+			if (baseFolders.length >= 1) {
+				return baseFolders[0].getAbsolutePath();
+			} else {
+				IStatus status = new Status(Status.WARNING, Activator.PLUGIN_ID, "Unable to find base folder " + rcpBasePrefix);
+				Activator.getDefault().getLog().log(status);
+				throw new XPagesSDKException("Unable to find base folder " + rcpBasePrefix);
+			}
+		} else {
+			IStatus status = new Status(Status.INFO, Activator.PLUGIN_ID, "Container for location " + rcpPluginPath
+					+ " is NOT a folder from root ");
+			Activator.getDefault().getLog().log(status);
+			throw new XPagesSDKException("Notes container for location " + rcpPluginPath + " is NOT a folder from root ");
+		}
+	}
+
+	
 }
