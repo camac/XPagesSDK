@@ -25,17 +25,17 @@
 			description="Installation folder for IBM Lotus Notes"
 			supportsArgument="false" />
 		<variable
-			name="rcp_data"
+			name="notes_rcp_data"
 			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
 			description="Notes RCP Workspace"
 			supportsArgument="false" />
 		<variable
-			name="rcp_base"
+			name="notes_rcp_base"
 			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
 			description="Notes RCP Base install folder"
 			supportsArgument="false" />
 		<variable
-			name="rcp_target"
+			name="notes_rcp_target"
 			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
 			description="Notes RCP Run Target"
 			supportsArgument="false" />
