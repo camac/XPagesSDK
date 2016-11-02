@@ -46,5 +46,21 @@ public class StringUtil {
 		return path;
 	}
 
+	/**
+	 * Fixes the path in "Drive\:/Folder/Subfolder" format by removing "\" char and prune. Used in links file.  
+	 *  	
+	 * @param path
+	 * @return fixed path
+	 */
+	public static String fixPath(String path) {
+		int index = path.indexOf(':');
+		if (index != -1) {
+			if (path.charAt(index - 1) == '\\') {
+				path = path.substring(0, index - 1) + path.substring(index);
+			}
+		}
+		
+		return prunePath(path);
+	}
 	
 }
