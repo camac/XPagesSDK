@@ -35,7 +35,7 @@ public class DominoOSGIConfig {
 	 */
 	public DominoOSGIConfig(AbstractDominoOSGILaunchConfiguration launchConfiguration) {
 		this.launchConfiguration = launchConfiguration;
-		this.targetPlatform = launchConfiguration.getTarget().platform();
+		this.targetPlatform = launchConfiguration.getNotesDominoPlatform();
 	}
 
 	public INotesDominoPlatform getTargetPlatform() {

@@ -1,5 +1,5 @@
  /*
- * © Copyright IBM Corp. 2012
+ * ï¿½ Copyright IBM Corp. 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -15,7 +15,8 @@
  */
 package com.ibm.domino.osgi.debug.launch;
 
-import org.openntf.xsp.sdk.platform.Target;
+import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
 
 /**
  * @author dtaieb
@@ -52,8 +53,8 @@ public class DominoOSGILaunchConfiguration extends AbstractDominoOSGILaunchConfi
     }
 
 	@Override
-	protected Target getTarget() {
-		return Target.DOMINO_HTTP;
+	protected INotesDominoPlatform getNotesDominoPlatform() {
+		return NotesDominoPlatformFactory.getDominoHttpPlatform();
 	}
 
 }

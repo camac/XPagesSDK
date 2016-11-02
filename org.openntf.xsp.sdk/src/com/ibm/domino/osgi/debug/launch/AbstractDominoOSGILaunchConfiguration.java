@@ -18,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -35,13 +34,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
-import org.eclipse.pde.core.target.ITargetLocation;
-import org.eclipse.pde.core.target.ITargetPlatformService;
-import org.eclipse.pde.core.target.TargetBundle;
 import org.eclipse.pde.internal.core.PDEState;
 import org.eclipse.pde.internal.core.PluginPathFinder;
 import org.eclipse.pde.internal.launching.launcher.LaunchConfigurationHelper;
@@ -51,7 +46,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
-import org.openntf.xsp.sdk.platform.Target;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
 /**
@@ -63,7 +57,7 @@ import org.openntf.xsp.sdk.utils.StringUtil;
  *         configuration.
  */
 
-@SuppressWarnings("restriction")
+//@SuppressWarnings("restriction")
 public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunchConfiguration {
 
 //	private TargetBundle osgiTargetBundle;
@@ -202,7 +196,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	 */
 	private void updateConfigIni(DominoOSGIConfig config, ILaunchConfiguration configuration)
 			throws CoreException, IOException {
-		INotesDominoPlatform ndPlatform = this.getTarget().platform();
+		INotesDominoPlatform ndPlatform = this.getNotesDominoPlatform();
 		
 		File configIni = new File(getConfigDir(configuration), "config.ini");
 
@@ -564,7 +558,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	 */
 	private File getPDELaunchIni(DominoOSGIConfig osgiConfig) throws IOException {
 		// FIXME Profile support
-		String workspacePath = getTarget().platform().getRemoteWorkspaceFolder();
+		String workspacePath = getNotesDominoPlatform().getRemoteWorkspaceFolder();
 		
 		final File dominoWorkspaceDir = new File(workspacePath);
 		if (!dominoWorkspaceDir.exists() || !dominoWorkspaceDir.isDirectory()) {
@@ -589,7 +583,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 		return new File(dominoWorkspaceDir, "pde.launch.ini");
 	}
 	
-	protected abstract Target getTarget();
+	protected abstract INotesDominoPlatform getNotesDominoPlatform();
 	
 	/**
 	 * @return the list of defined profiles
