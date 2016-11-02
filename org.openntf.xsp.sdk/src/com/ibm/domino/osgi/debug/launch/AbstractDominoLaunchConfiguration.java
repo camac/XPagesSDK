@@ -186,8 +186,8 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		if (!configIni.exists()) {
 			// No config ini to update
 			String errMsg = MessageFormat.format(
-					"Error occured populating config.ini file. Cannot find the file '{0}'",
-					configIni.getAbsolutePath());
+						"Error occured populating config.ini file. Cannot find the file '{0}'",
+						configIni.getAbsolutePath());
 			throw new RuntimeException(errMsg);
 		}
 
@@ -249,17 +249,20 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 				osgiBundleList.addAll(computeOsgiBundles(ndPlatform, LaunchUtils.toRemotePath(linkedRepo, ndPlatform)));
 			}
 			
-			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()) + 
+			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()).replace('\\', '/') + 
 										"/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
 			osgiBundleList.add("reference:file:"+systemFragmentJar);
 
 			StringBuffer bundles=new StringBuffer();
 			for(String osgiBundle: osgiBundleList) {
-				bundles.append(osgiBundle + "\n");
+				if(bundles.length()>0) {
+					bundles.append(",");
+				}
+				bundles.append(osgiBundle);
 			}
 			
 			props.setProperty("osgi.bundles", bundles.toString());
-			props.setProperty("osgi.install.area", "file:" + ndPlatform.getLocalRcpSharedFolder());
+			props.setProperty("osgi.install.area", "file:" + ndPlatform.getLocalRcpSharedFolder().replace('\\', '/'));
 
 			if (osgiFrameworkModel != null) {
 				props.put("osgi.framework", getBundleUrl(osgiFrameworkModel, false));
@@ -287,7 +290,6 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			return null;
 		}
 
-		// XXX getBundleURL should be modified for remote (or might be a conversion)
 		return LaunchConfigurationHelper.getBundleURL(model, bIncludeReference);
 	}
 
@@ -325,7 +327,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		Set<String> bundles = new LinkedHashSet<String>();
 		
 		// Scan folder
-		Map<String, IPluginModelBase> modelMap = computeTargetModels(fAllBundles, ndPlatform.getRemoteRcpTargetFolder());
+		Map<String, IPluginModelBase> modelMap = computeTargetModels(fAllBundles, remotePath);
 
 		for(Map.Entry<String, IPluginModelBase> entry: modelMap.entrySet()) {
 			String id = entry.getKey();
@@ -333,10 +335,12 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			
 			String bundleUrl = LaunchUtils.toLocalBundleUrl(getBundleUrl(bundle, false), ndPlatform);				
 			String suffix = LaunchUtils.getBundleSuffix(id);
-			// add reference\:
-			bundles.add("reference\\:" + bundleUrl + suffix);
+
+			bundles.add("reference:" + bundleUrl + suffix);
 		}
 
+		System.out.println(bundles.size() + " bundles found in '" + remotePath + "'");
+		
 		return bundles;
 	}
 	
