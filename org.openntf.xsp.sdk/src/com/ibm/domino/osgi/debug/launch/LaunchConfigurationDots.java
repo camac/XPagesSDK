@@ -86,7 +86,7 @@ public class LaunchConfigurationDots extends AbstractDominoLaunchConfiguration {
 	}
 
 	@Override
-	protected INotesDominoPlatform getNotesDominoPlatform() {
+	public INotesDominoPlatform getNotesDominoPlatform() {
 		return NotesDominoPlatformFactory.getDominoDotsPlatform();
 	}
 

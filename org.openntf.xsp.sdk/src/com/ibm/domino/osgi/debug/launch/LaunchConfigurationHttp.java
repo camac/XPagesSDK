@@ -42,7 +42,7 @@ public class LaunchConfigurationHttp extends AbstractDominoLaunchConfiguration {
     }
 
 	@Override
-	protected INotesDominoPlatform getNotesDominoPlatform() {
+	public INotesDominoPlatform getNotesDominoPlatform() {
 		return NotesDominoPlatformFactory.getDominoHttpPlatform();
 	}
 

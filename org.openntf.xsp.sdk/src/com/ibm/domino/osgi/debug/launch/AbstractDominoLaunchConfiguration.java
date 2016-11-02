@@ -587,11 +587,11 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		return new File(dominoWorkspaceDir, "pde.launch.ini");
 	}
 	
-	protected abstract INotesDominoPlatform getNotesDominoPlatform();
 	
 	/**
 	 * @return the list of defined profiles
 	 */
+	public abstract INotesDominoPlatform getNotesDominoPlatform();
 	public abstract String[] getProfiles();
 
 	public String getSelectedProfile() {
