@@ -22,9 +22,9 @@ import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
  * @author dtaieb
  *
  */
-public class LaunchConfigurationDomino extends AbstractLaunchConfiguration {
+public class LaunchConfigurationHttp extends AbstractDominoLaunchConfiguration {
 
-	public LaunchConfigurationDomino() {
+	public LaunchConfigurationHttp() {
 		super();
 	}
 		

@@ -156,8 +156,8 @@
 	<extension point="org.eclipse.pde.ui.osgiFrameworks">
 		<framework
 			id="com.ibm.domino.osgi.debug.framework"
-			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerDomino"
-			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationDomino"
+			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerHttp"
+			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationHttp"
 			name="Domino OSGi Framework" />
 		<framework
 			id="com.ibm.domino.osgi.debug.dots.framework"

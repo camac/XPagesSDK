@@ -27,13 +27,13 @@ import org.openntf.xsp.sdk.utils.StringUtil;
 public class LaunchHandler {
 
 	private int iReturnCode; // Return Code from the Config Dialog
-	private final AbstractLaunchConfiguration launchConfiguration;
+	private final AbstractDominoLaunchConfiguration launchConfiguration;
 
 	/**
 	 * @param launchConfiguration
 	 * @param workspaceRelativePath
 	 */
-	public LaunchHandler(AbstractLaunchConfiguration launchConfiguration) {
+	public LaunchHandler(AbstractDominoLaunchConfiguration launchConfiguration) {
 		this.launchConfiguration = launchConfiguration;
 	}
 

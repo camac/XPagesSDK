@@ -58,7 +58,7 @@ import org.openntf.xsp.sdk.utils.StringUtil;
  */
 
 //@SuppressWarnings("restriction")
-public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfiguration {
+public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchConfiguration {
 
 //	private TargetBundle osgiTargetBundle;
 	private IPluginModelBase osgiFrameworkModel;
@@ -67,7 +67,7 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 	/**
 	 * 
 	 */
-	public AbstractLaunchConfiguration() {
+	public AbstractDominoLaunchConfiguration() {
 	}
 
 	/*
@@ -109,7 +109,7 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 				displayMessage("Error", 
 						"The \"Default Auto-Start\" attribute within your {0} configuration must be set "
 						+ "to \"false\". A value of \"true\" has been detected.\n\nThe configuration will not be applied!",
-						AbstractLaunchConfiguration.this.getName());
+						AbstractDominoLaunchConfiguration.this.getName());
 				return;
 			}
 

@@ -22,7 +22,7 @@ import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
  * @author dtaieb
  *         The OSGi configuration related to DOTs
  */
-public class LaunchConfigurationDots extends AbstractLaunchConfiguration {
+public class LaunchConfigurationDots extends AbstractDominoLaunchConfiguration {
 
 	private static final String DEFAULT_PROFILE = "DOTS";
 	private static final String PREF_LASTUSEPROFILES = "domino.lastuse.osgi.profile";

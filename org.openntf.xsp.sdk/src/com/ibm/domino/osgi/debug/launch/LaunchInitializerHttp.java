@@ -20,12 +20,12 @@ import org.eclipse.pde.launching.OSGiLaunchConfigurationInitializer;
  * @author dtaieb
  *
  */
-public class LaunchInitializerDomino extends OSGiLaunchConfigurationInitializer {
+public class LaunchInitializerHttp extends OSGiLaunchConfigurationInitializer {
 
 	/**
 	 * 
 	 */
-	public LaunchInitializerDomino() {
+	public LaunchInitializerHttp() {
 	}
 
 	@Override

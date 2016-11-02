@@ -20,7 +20,7 @@ package com.ibm.domino.osgi.debug.launch;
  * @author dtaieb
  * Initializer used for DOTs
  */
-public class LaunchInitializerDots extends LaunchInitializerDomino {
+public class LaunchInitializerDots extends LaunchInitializerHttp {
 
 	/**
 	 * 
