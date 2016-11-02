@@ -7,7 +7,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.openntf.xsp.sdk.Activator;
 import org.osgi.service.prefs.Preferences;
 
-public class XPagesSDKPreferences {
+public class XspPreferences {
 
 	// Removed default values because every environment are different from another.
 	// Defaults are just making things more difficult. By default, the SDK should not validate anything.

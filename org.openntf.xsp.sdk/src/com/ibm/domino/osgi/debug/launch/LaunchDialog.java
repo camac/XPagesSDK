@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
-import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
+import org.openntf.xsp.sdk.preferences.XspPreferences;
 
 /**
  * @author dtaieb
@@ -86,7 +86,7 @@ public class LaunchDialog extends TitleAreaDialog {
 
 		String[] profiles = config.getProfiles();
 		if (profiles != null && profiles.length > 0) {
-			String prefProfile = XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.PREF_PROFILE, null);
+			String prefProfile = XspPreferences.getPreferenceString(XspPreferences.PREF_PROFILE, null);
 
 			new Label(container, SWT.NULL).setText("Profile");
 			profileCombo = new Combo(container, SWT.BORDER);
@@ -131,7 +131,7 @@ public class LaunchDialog extends TitleAreaDialog {
 			String selectedProfile = profileCombo.getText();
 			if (selectedProfile != null && selectedProfile.length() > 0) {
 				config.setProfile(selectedProfile);
-				XPagesSDKPreferences.setPreferenceString(XPagesSDKPreferences.PREF_PROFILE, selectedProfile);
+				XspPreferences.setPreferenceString(XspPreferences.PREF_PROFILE, selectedProfile);
 			}
 		}
 		super.okPressed();

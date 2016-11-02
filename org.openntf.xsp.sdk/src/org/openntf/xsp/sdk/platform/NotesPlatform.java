@@ -1,6 +1,6 @@
 package org.openntf.xsp.sdk.platform;
 
-import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
+import org.openntf.xsp.sdk.preferences.XspPreferences;
 
 public class NotesPlatform extends AbstractNotesDominoPlatform {
 
@@ -11,31 +11,31 @@ public class NotesPlatform extends AbstractNotesDominoPlatform {
 
 	@Override
 	public boolean isEnabled() {
-		String status = XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.NOTES_STATUS);
+		String status = XspPreferences.getPreferenceString(XspPreferences.NOTES_STATUS);
 		
-		return !XPagesSDKPreferences.STATUS_DISABLED.equals(status);
+		return !XspPreferences.STATUS_DISABLED.equals(status);
 	}
 
 	@Override
 	public boolean isLocal() {
-		String status = XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.NOTES_STATUS);
+		String status = XspPreferences.getPreferenceString(XspPreferences.NOTES_STATUS);
 		
-		return XPagesSDKPreferences.STATUS_LOCAL.equals(status);
+		return XspPreferences.STATUS_LOCAL.equals(status);
 	}
 	
 	@Override
 	public String getNotesIniFilePath() {
-		return XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.NOTES_INIFILE_PATH);
+		return XspPreferences.getPreferenceString(XspPreferences.NOTES_INIFILE_PATH);
 	}
 
 	@Override
 	public String getRemoteInstallFolder() {
-		return XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.NOTES_INSTALL_FOLDER);
+		return XspPreferences.getPreferenceString(XspPreferences.NOTES_INSTALL_FOLDER);
 	}
 
 	@Override
 	public String getRemoteDataFolder() {
-		return XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.NOTES_DATA_FOLDER);
+		return XspPreferences.getPreferenceString(XspPreferences.NOTES_DATA_FOLDER);
 	}
 
 	@Override

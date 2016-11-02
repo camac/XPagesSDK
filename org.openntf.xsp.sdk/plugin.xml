@@ -4,7 +4,7 @@
 	<!-- Preference Settings -->
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			class="org.openntf.xsp.sdk.preferences.XPagesSDKPreferencesPage"
+			class="org.openntf.xsp.sdk.preferences.XspPreferencesPage"
 			id="org.openntf.xsp.sdk.page"
 			name="XPages SDK">
 		</page>
@@ -13,7 +13,7 @@
 		id="org.openntf.xsp.sdk"
 		point="org.eclipse.core.runtime.preferences">
 		<initializer
-			class="org.openntf.xsp.sdk.preferences.XPagesSDKPreferencesInitializer" />
+			class="org.openntf.xsp.sdk.preferences.XspPreferencesInitializer" />
 	</extension>
 	<!-- /Preference Settings -->
 
