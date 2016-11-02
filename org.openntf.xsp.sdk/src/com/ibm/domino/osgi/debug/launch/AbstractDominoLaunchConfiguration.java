@@ -35,16 +35,14 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDEState;
 import org.eclipse.pde.internal.core.PluginPathFinder;
 import org.eclipse.pde.internal.launching.launcher.LaunchConfigurationHelper;
 import org.eclipse.pde.launching.EquinoxLaunchConfiguration;
 import org.eclipse.pde.launching.IPDELauncherConstants;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.openntf.xsp.sdk.exceptions.AbortException;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
@@ -91,8 +89,17 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		}
 	}
 
-	private class AbortException extends RuntimeException {
-		private static final long serialVersionUID = 1L;
+	@Override
+	public File getConfigDir(ILaunchConfiguration configuration) {
+		return super.getConfigDir(configuration);
+	}
+
+	public String getSelectedProfile() {
+		return selectedProfile;
+	}
+
+	public void setSelectedProfile(String selectedProfile) {
+		this.selectedProfile = selectedProfile;
 	}
 
 	/**
