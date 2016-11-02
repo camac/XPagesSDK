@@ -37,7 +37,7 @@ public class XPagesVMSetup {
 
 	public static void setupDominoJRE(String jvmPath) {
 		// check that the appropriate JRE is configured for this version of Notes
-		// System.out.println("JRE Setup Activated!");
+		// System.out.println("JRE Setup Activated: " + jvmPath);
 		String vmID = DOMINO_VM_ID;
 		IVMInstallType installType = JavaRuntime.getVMInstallType("org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType");
 		IVMInstall install = installType.findVMInstall(vmID);

@@ -168,11 +168,11 @@ public class LaunchUtils {
 
 	public static void displayMessage(final boolean isError, final String title, String message, Object... args) {
 		final String dialogMessage = MessageFormat.format(message, args);
-		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		
+
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
+				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 				if(isError) {
 					MessageDialog.openError(shell, title, dialogMessage);
 				} else {

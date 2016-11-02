@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -158,6 +159,8 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String errorMessage = e.getMessage();
 			if (e instanceof AbortException) {
 				errorMessage = "Domino OSGi launch configuration aborted by user";
+			} else {
+				e.printStackTrace(System.err);
 			}
 			
 			if(StringUtil.isEmpty(errorMessage)) {
@@ -182,11 +185,10 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 
 		if (!configIni.exists()) {
 			// No config ini to update
-			LaunchUtils.displayMessage(true,
-					"Error!",
+			String errMsg = MessageFormat.format(
 					"Error occured populating config.ini file. Cannot find the file '{0}'",
 					configIni.getAbsolutePath());
-			return;
+			throw new RuntimeException(errMsg);
 		}
 
 		Map<String, String> envMap = configuration.getAttribute("org.eclipse.debug.core.environmentVariables",
@@ -219,8 +221,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		}
 
 		if (LaunchUtils.isTargetPlatformPluginsEnabled(configuration)) {
-			LaunchUtils.displayMessage(true, "Error!", "Please do not enable any target platform plugins.", "");
-			return;
+			throw new RuntimeException("Please do not enable any target platform plugins.");
 		} else {
 			// Load the properties from config.ini
 			Properties props = new Properties();
