@@ -156,13 +156,13 @@
 	<extension point="org.eclipse.pde.ui.osgiFrameworks">
 		<framework
 			id="com.ibm.domino.osgi.debug.framework"
-			initializer="com.ibm.domino.osgi.debug.launch.DominoLaunchInitializer"
-			launcherDelegate="com.ibm.domino.osgi.debug.launch.DominoOSGILaunchConfiguration"
+			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerDomino"
+			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationDomino"
 			name="Domino OSGi Framework" />
 		<framework
 			id="com.ibm.domino.osgi.debug.dots.framework"
-			initializer="com.ibm.domino.osgi.debug.launch.DotsLaunchInitializer"
-			launcherDelegate="com.ibm.domino.osgi.debug.launch.DotsLaunchConfiguration"
+			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerDots"
+			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationDots"
 			name="Domino Tasklet Framework (DOTS)" />
 	</extension>
 	<!-- /Launch Configurations and related stuff -->

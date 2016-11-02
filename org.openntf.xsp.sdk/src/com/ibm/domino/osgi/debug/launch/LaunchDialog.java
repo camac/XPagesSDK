@@ -1,5 +1,5 @@
 /*
- * © Copyright IBM Corp. 2012
+ * ï¿½ Copyright IBM Corp. 2012
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -11,8 +11,6 @@
  * permissions and limitations under the License.
  */
 package com.ibm.domino.osgi.debug.launch;
-
-import static com.ibm.domino.osgi.debug.preferences.PreferenceConstants.PREF_PROFILE;
 
 import java.text.MessageFormat;
 
@@ -39,8 +37,8 @@ import org.openntf.xsp.sdk.preferences.XPagesSDKPreferences;
  *         configuration
  *
  */
-public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
-	private final DominoOSGIConfig config;
+public class LaunchDialog extends TitleAreaDialog {
+	private final LaunchHandler config;
 	private final INotesDominoPlatform targetPlatform;
 	private Text dataDirectoryText;
 	private Text binDirectoryText;
@@ -49,7 +47,7 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 	/**
 	 * @param parent
 	 */
-	public DominoOSGIConfigCreateDialog(DominoOSGIConfig config, Shell parent) {
+	public LaunchDialog(LaunchHandler config, Shell parent) {
 		super(parent);
 
 		this.config = config;
@@ -88,7 +86,7 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 
 		String[] profiles = config.getProfiles();
 		if (profiles != null && profiles.length > 0) {
-			String prefProfile = XPagesSDKPreferences.getPreferenceString(PREF_PROFILE, null);
+			String prefProfile = XPagesSDKPreferences.getPreferenceString(XPagesSDKPreferences.PREF_PROFILE, null);
 
 			new Label(container, SWT.NULL).setText("Profile");
 			profileCombo = new Combo(container, SWT.BORDER);
@@ -133,7 +131,7 @@ public class DominoOSGIConfigCreateDialog extends TitleAreaDialog {
 			String selectedProfile = profileCombo.getText();
 			if (selectedProfile != null && selectedProfile.length() > 0) {
 				config.setProfile(selectedProfile);
-				XPagesSDKPreferences.setPreferenceString(PREF_PROFILE, selectedProfile);
+				XPagesSDKPreferences.setPreferenceString(XPagesSDKPreferences.PREF_PROFILE, selectedProfile);
 			}
 		}
 		super.okPressed();

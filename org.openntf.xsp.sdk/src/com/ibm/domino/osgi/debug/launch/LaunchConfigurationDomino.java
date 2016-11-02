@@ -22,12 +22,12 @@ import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
  * @author dtaieb
  *
  */
-public class DominoOSGILaunchConfiguration extends AbstractDominoOSGILaunchConfiguration {
+public class LaunchConfigurationDomino extends AbstractLaunchConfiguration {
 
 	/**
 	 * 
 	 */
-	public DominoOSGILaunchConfiguration() {
+	public LaunchConfigurationDomino() {
 	}
 	
 	@Override

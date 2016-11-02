@@ -58,7 +58,7 @@ import org.openntf.xsp.sdk.utils.StringUtil;
  */
 
 //@SuppressWarnings("restriction")
-public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunchConfiguration {
+public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfiguration {
 
 //	private TargetBundle osgiTargetBundle;
 	private IPluginModelBase osgiFrameworkModel;
@@ -66,7 +66,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	/**
 	 * 
 	 */
-	public AbstractDominoOSGILaunchConfiguration() {
+	public AbstractLaunchConfiguration() {
 	}
 
 	/*
@@ -108,15 +108,15 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 				displayMessage("Error", 
 						"The \"Default Auto-Start\" attribute within your {0} configuration must be set "
 						+ "to \"false\". A value of \"true\" has been detected.\n\nThe configuration will not be applied!",
-						AbstractDominoOSGILaunchConfiguration.this.getName());
+						AbstractLaunchConfiguration.this.getName());
 				return;
 			}
 
-			final DominoOSGIConfig config = new DominoOSGIConfig(this);
+			final LaunchHandler config = new LaunchHandler(this);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				@Override
 				public void run() {
-					new DominoOSGIConfigCreateDialog(config,
+					new LaunchDialog(config,
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).open();
 				}
 			});
@@ -194,7 +194,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	private void updateConfigIni(DominoOSGIConfig config, ILaunchConfiguration configuration)
+	private void updateConfigIni(LaunchHandler config, ILaunchConfiguration configuration)
 			throws CoreException, IOException {
 		INotesDominoPlatform ndPlatform = this.getNotesDominoPlatform();
 		
@@ -531,7 +531,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	 * @param configuration
 	 * @throws IOException
 	 */
-	private void createPDELaunchIni(DominoOSGIConfig osgiConfig, ILaunchConfiguration configuration)
+	private void createPDELaunchIni(LaunchHandler osgiConfig, ILaunchConfiguration configuration)
 			throws IOException {
 		File pdeLaunchIniFile = getPDELaunchIni(osgiConfig);
 		FileOutputStream fos = null;
@@ -556,7 +556,7 @@ public abstract class AbstractDominoOSGILaunchConfiguration extends EquinoxLaunc
 	 * @return
 	 * @throws IOException
 	 */
-	private File getPDELaunchIni(DominoOSGIConfig osgiConfig) throws IOException {
+	private File getPDELaunchIni(LaunchHandler osgiConfig) throws IOException {
 		// FIXME Profile support
 		String workspacePath = getNotesDominoPlatform().getRemoteWorkspaceFolder();
 		

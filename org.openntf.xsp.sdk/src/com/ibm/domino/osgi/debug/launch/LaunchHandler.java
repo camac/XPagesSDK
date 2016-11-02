@@ -17,29 +17,28 @@ package com.ibm.domino.osgi.debug.launch;
 
 import java.io.File;
 
+import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
 /**
  * @author dtaieb Hold information about the Domino OSGi configuration
  */
-public class DominoOSGIConfig {
+public class LaunchHandler {
 
 	private int iReturnCode; // Return Code from the Config Dialog
-	private final INotesDominoPlatform targetPlatform; // Target platform
-	private final AbstractDominoOSGILaunchConfiguration launchConfiguration;
+	private final AbstractLaunchConfiguration launchConfiguration;
 
 	/**
 	 * @param launchConfiguration
 	 * @param workspaceRelativePath
 	 */
-	public DominoOSGIConfig(AbstractDominoOSGILaunchConfiguration launchConfiguration) {
+	public LaunchHandler(AbstractLaunchConfiguration launchConfiguration) {
 		this.launchConfiguration = launchConfiguration;
-		this.targetPlatform = launchConfiguration.getNotesDominoPlatform();
 	}
 
 	public INotesDominoPlatform getTargetPlatform() {
-		return targetPlatform;
+		return this.launchConfiguration.getNotesDominoPlatform();
 	}
 
 	/**
@@ -56,28 +55,29 @@ public class DominoOSGIConfig {
 		iReturnCode = returnCode;
 	}
 
-	public void isValid() throws DominoOSGIConfigException {
+	public void isValid() throws XPagesSDKException {
+		INotesDominoPlatform targetPlatform = getTargetPlatform();
+		
 		if (StringUtil.isEmpty(targetPlatform.getRemoteInstallFolder())) {
-			throw new DominoOSGIConfigException("Domino Bin Path is empty");
+			throw new XPagesSDKException("Domino Bin Path is empty");
 		}
 		if (StringUtil.isEmpty(targetPlatform.getRemoteDataFolder())) {
-			throw new DominoOSGIConfigException("Domino Data Path is empty");
+			throw new XPagesSDKException("Domino Data Path is empty");
 		}
 
 		File bin = new File(targetPlatform.getRemoteInstallFolder());
 		if (!bin.exists() || !bin.isDirectory()) {
-			throw new DominoOSGIConfigException("Domino Bin Path does not exist or is not a valid directory");
+			throw new XPagesSDKException("Domino Bin Path does not exist or is not a valid directory");
 		}
 
 		File data = new File(targetPlatform.getRemoteDataFolder());
 		if (!data.exists() || !data.isDirectory()) {
-			throw new DominoOSGIConfigException("Domino Data Path does not exist or is not a valid directory");
+			throw new XPagesSDKException("Domino Data Path does not exist or is not a valid directory");
 		}
 
 		File dominoData = new File(data, "domino");
 		if (!dominoData.exists() || !dominoData.isDirectory()) {
-			throw new DominoOSGIConfigException(
-					"Domino Data Path is not a valid data directory: domino subdirectory is missing");
+			throw new XPagesSDKException("Domino Data Path is not a valid data directory: domino subdirectory is missing");
 		}
 	}
 

@@ -1,5 +1,5 @@
  /*
- * © Copyright IBM Corp. 2012
+ * ï¿½ Copyright IBM Corp. 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -20,12 +20,12 @@ package com.ibm.domino.osgi.debug.launch;
  * @author dtaieb
  * Initializer used for DOTs
  */
-public class DotsLaunchInitializer extends DominoLaunchInitializer {
+public class LaunchInitializerDots extends LaunchInitializerDomino {
 
 	/**
 	 * 
 	 */
-	public DotsLaunchInitializer() {
+	public LaunchInitializerDots() {
 	}
 
 }

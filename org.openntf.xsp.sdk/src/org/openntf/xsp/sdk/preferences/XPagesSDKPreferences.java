@@ -32,6 +32,10 @@ public class XPagesSDKPreferences {
 	public final static String STATUS_DISABLED = "DISABLED";
 	public final static String STATUS_LOCAL = "LOCAL";
 	public final static String STATUS_REMOTE = "REMOTE";
+
+	// public static final String PREF_DOMINO_BIN_DIR = "domino.bin.directory";
+	// public static final String PREF_DOMINO_DATA_DIR = "domino.data.directory";
+	public static final String PREF_PROFILE = "domino.osgi.profile";
 	
 	private final static Map<String, String> defaultValues = new HashMap<String, String>();
 	
@@ -68,6 +72,5 @@ public class XPagesSDKPreferences {
 	public static void setPreferenceString(String name, String value) {
 		getPreferenceStore().setValue(name, value);
 	}
-	
 	
 }

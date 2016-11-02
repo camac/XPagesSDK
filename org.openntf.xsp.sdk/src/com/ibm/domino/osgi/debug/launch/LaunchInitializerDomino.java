@@ -1,5 +1,5 @@
 /*
- * © Copyright IBM Corp. 2012
+ * ï¿½ Copyright IBM Corp. 2012
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
@@ -20,12 +20,12 @@ import org.eclipse.pde.launching.OSGiLaunchConfigurationInitializer;
  * @author dtaieb
  *
  */
-public class DominoLaunchInitializer extends OSGiLaunchConfigurationInitializer {
+public class LaunchInitializerDomino extends OSGiLaunchConfigurationInitializer {
 
 	/**
 	 * 
 	 */
-	public DominoLaunchInitializer() {
+	public LaunchInitializerDomino() {
 	}
 
 	@Override
