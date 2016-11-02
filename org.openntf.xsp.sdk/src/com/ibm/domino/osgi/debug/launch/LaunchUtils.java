@@ -1,6 +1,5 @@
 package com.ibm.domino.osgi.debug.launch;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -141,25 +140,20 @@ public class LaunchUtils {
 			if (links != null) {
 				for (File link : links) {
 					FileReader reader = null;
-					BufferedReader lineReader = null;
+
 					try {
 						reader = new FileReader(link);
-						lineReader = new BufferedReader(reader);
-						String linkPath = lineReader.readLine();
-						if (!StringUtil.isEmpty(linkPath)) {
-							if (linkPath.indexOf('=') != -1) {
-								linkPath = linkPath.substring(linkPath.indexOf('=') + 1);
-								
-								linkedRepos.add(StringUtil.fixPath(linkPath) + "/eclipse");
-							}
+						Properties linkProps = new Properties();
+						linkProps.load(reader);
+						String linkPath = StringUtil.prunePath(linkProps.getProperty("path"));
+						
+						if(!StringUtil.isEmpty(linkPath)) {
+							linkedRepos.add(linkPath + "/eclipse");
 						}
 					} catch (Exception e) {
 						e.printStackTrace(System.err);
 					} finally {
 						try {
-							if(null!=lineReader) {
-								lineReader.close();
-							}
 							if(null!=reader) {
 								reader.close();
 							}
