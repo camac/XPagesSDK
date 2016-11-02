@@ -92,7 +92,7 @@ public class LaunchHandler {
 	 * @param selectedProfile
 	 */
 	public void setProfile(String selectedProfile) {
-		launchConfiguration.setProfile(selectedProfile);
+		launchConfiguration.setSelectedProfile(selectedProfile);
 	}
 
 }

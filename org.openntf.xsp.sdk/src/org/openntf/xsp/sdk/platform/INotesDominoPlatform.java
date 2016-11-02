@@ -25,4 +25,5 @@ public interface INotesDominoPlatform {
 	public String getRemoteWorkspaceFolder(String profileName);
 
 	public String getRcpBase() throws Exception;
+	public String getSystemFragmentFileName();
 }

@@ -24,18 +24,15 @@ import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
  */
 public class LaunchConfigurationDots extends AbstractLaunchConfiguration {
 
+	private static final String DEFAULT_PROFILE = "DOTS";
 	private static final String PREF_LASTUSEPROFILES = "domino.lastuse.osgi.profile";
-	private String selectedProfile;
 
 	/**
 	 * 
 	 */
 	public LaunchConfigurationDots() {
-	}
-
-	@Override
-	protected String getSystemFragmentFileName() {
-		return "com.ibm.dots.sharedlib_1.0.0.jar";
+		super();
+		this.setSelectedProfile(DEFAULT_PROFILE);
 	}
 
 	@Override
@@ -49,7 +46,7 @@ public class LaunchConfigurationDots extends AbstractLaunchConfiguration {
 	 */
 	private HashSet<String> getProfilesFromStore() {
 		HashSet<String> profiles = new HashSet<String>();
-		profiles.add("DOTS");
+		profiles.add(DEFAULT_PROFILE);
 		String prefProfiles = Activator.getDefault().getPreferenceStore().getString(PREF_LASTUSEPROFILES);
 		if (prefProfiles != null) {
 			String[] splits = prefProfiles.split(",");
@@ -61,10 +58,10 @@ public class LaunchConfigurationDots extends AbstractLaunchConfiguration {
 		}
 		return profiles;
 	}
-
+	
 	@Override
-	public void setProfile(String selectedProfile) {
-		this.selectedProfile = selectedProfile;
+	public void setSelectedProfile(String selectedProfile) {
+		super.setSelectedProfile(selectedProfile);
 		// Save to store
 		HashSet<String> profiles = getProfilesFromStore();
 		if (!profiles.contains(selectedProfile.toUpperCase())) {

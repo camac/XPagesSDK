@@ -80,4 +80,10 @@ public class NotesPlatform extends AbstractNotesDominoPlatform {
 		return getRemoteDataFolder() + "/workspace";
 	}
 
+	@Override
+	public String getSystemFragmentFileName() {
+		// Used by Launch configurations. No need here.
+		return null;
+	}
+
 }

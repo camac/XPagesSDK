@@ -48,4 +48,9 @@ public class DominoDotsPlatform extends DominoHttpPlatform {
 		return getRemoteDataFolder() + "/domino/workspace-" + profileName;
 	}
 
+	@Override
+	public String getSystemFragmentFileName() {
+		return "com.ibm.dots.sharedlib_1.0.0.jar";
+	}
+
 }

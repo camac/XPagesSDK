@@ -62,7 +62,8 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 
 //	private TargetBundle osgiTargetBundle;
 	private IPluginModelBase osgiFrameworkModel;
-
+	private String selectedProfile=null;
+	
 	/**
 	 * 
 	 */
@@ -112,16 +113,16 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 				return;
 			}
 
-			final LaunchHandler config = new LaunchHandler(this);
+			final LaunchHandler launchHandler = new LaunchHandler(this);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				@Override
 				public void run() {
-					new LaunchDialog(config,
+					new LaunchDialog(launchHandler,
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).open();
 				}
 			});
 
-			if (config.getReturnCode() == IDialogConstants.CANCEL_ID) {
+			if (launchHandler.getReturnCode() == IDialogConstants.CANCEL_ID) {
 				return;
 			}
 
@@ -135,14 +136,15 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 				}
 				throw e;
 			}
+			
 			getProgramArguments(configuration);
 
 			// Update the config.ini with any environment variables set by the
 			// configuration
-			updateConfigIni(config, configuration);
+			updateConfigIni(launchHandler, configuration);
 
 			// Create the pde.launch.ini
-			createPDELaunchIni(config, configuration);
+			createPDELaunchIni(launchHandler, configuration);
 
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				@Override
@@ -151,7 +153,7 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 					try {
 						displayMessage("Success",
 								"Successfully updated \"{0}\".\nTo run normally, please delete this file.", 
-								getPDELaunchIni(config).getAbsolutePath());
+								getPDELaunchIni(launchHandler).getAbsolutePath());
 					} catch (IOException e) {
 						MessageDialog.openError(shell, "Error", e.getMessage());
 					}
@@ -590,14 +592,15 @@ public abstract class AbstractLaunchConfiguration extends EquinoxLaunchConfigura
 	 */
 	public abstract String[] getProfiles();
 
-	/**
-	 * @param selectedProfile
-	 */
-	public abstract void setProfile(String selectedProfile);
+	public String getSelectedProfile() {
+		return selectedProfile;
+	}
+
+	public void setSelectedProfile(String selectedProfile) {
+		this.selectedProfile = selectedProfile;
+	}
 
 	public abstract String getName();
-
-	protected abstract String getSystemFragmentFileName();
 
 	protected void displayMessage(String title, String message, Object... args) {
 		final String dialogTitle = title;

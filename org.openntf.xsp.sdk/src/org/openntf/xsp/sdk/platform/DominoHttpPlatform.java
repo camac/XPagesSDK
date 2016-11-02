@@ -80,4 +80,9 @@ public class DominoHttpPlatform extends AbstractNotesDominoPlatform {
 		return getRemoteDataFolder() + "/domino/workspace";
 	}
 
+	@Override
+	public String getSystemFragmentFileName() {
+		return "com.ibm.domino.osgi.sharedlib_1.0.0.jar";
+	}
+
 }

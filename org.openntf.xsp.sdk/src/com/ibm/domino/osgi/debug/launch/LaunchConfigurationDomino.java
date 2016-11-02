@@ -24,26 +24,15 @@ import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
  */
 public class LaunchConfigurationDomino extends AbstractLaunchConfiguration {
 
-	/**
-	 * 
-	 */
 	public LaunchConfigurationDomino() {
+		super();
 	}
-	
-	@Override
-	protected String getSystemFragmentFileName() {
-		return "com.ibm.domino.osgi.sharedlib_1.0.0.jar";
-	}
-	
+		
 	@Override
 	public String[] getProfiles() {
 		return null;
 	}
 	
-	@Override
-	public void setProfile(String selectedProfile) {		
-	}
-
     /* (non-Javadoc)
      * @see com.ibm.domino.osgi.debug.launch.AbstractDominoOSGILaunchConfiguration#getName()
      */

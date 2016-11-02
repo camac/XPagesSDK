@@ -38,7 +38,7 @@ import org.openntf.xsp.sdk.preferences.XspPreferences;
  *
  */
 public class LaunchDialog extends TitleAreaDialog {
-	private final LaunchHandler config;
+	private final LaunchHandler launchHandler;
 	private final INotesDominoPlatform targetPlatform;
 	private Text dataDirectoryText;
 	private Text binDirectoryText;
@@ -47,16 +47,16 @@ public class LaunchDialog extends TitleAreaDialog {
 	/**
 	 * @param parent
 	 */
-	public LaunchDialog(LaunchHandler config, Shell parent) {
+	public LaunchDialog(LaunchHandler launchHandler, Shell parent) {
 		super(parent);
 
-		this.config = config;
-		this.targetPlatform = config.getTargetPlatform();
+		this.launchHandler = launchHandler;
+		this.targetPlatform = launchHandler.getTargetPlatform();
 	}
 
 	@Override
 	public boolean close() {
-		config.setReturnCode(getReturnCode());
+		launchHandler.setReturnCode(getReturnCode());
 		return super.close();
 	}
 
@@ -84,7 +84,7 @@ public class LaunchDialog extends TitleAreaDialog {
 		dataDirectoryText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		dataDirectoryText.setEditable(false);
 
-		String[] profiles = config.getProfiles();
+		String[] profiles = launchHandler.getProfiles();
 		if (profiles != null && profiles.length > 0) {
 			String prefProfile = XspPreferences.getPreferenceString(XspPreferences.PREF_PROFILE, null);
 
@@ -130,7 +130,7 @@ public class LaunchDialog extends TitleAreaDialog {
 		if (profileCombo != null) {
 			String selectedProfile = profileCombo.getText();
 			if (selectedProfile != null && selectedProfile.length() > 0) {
-				config.setProfile(selectedProfile);
+				launchHandler.setProfile(selectedProfile);
 				XspPreferences.setPreferenceString(XspPreferences.PREF_PROFILE, selectedProfile);
 			}
 		}
@@ -144,7 +144,7 @@ public class LaunchDialog extends TitleAreaDialog {
 		try {
 			setErrorMessage(null);
 			setOKEnabled(true);
-			config.isValid();
+			launchHandler.isValid();
 		} catch (Throwable e) {
 			setErrorMessage(e.getMessage());
 			setOKEnabled(false);
