@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -113,7 +113,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			boolean autostart = configuration.getAttribute(IPDELauncherConstants.DEFAULT_AUTO_START, true);
 			if (autostart) {
 				// Auto-start must be set to false!
-				displayMessage("Error", 
+				LaunchUtils.displayMessage(true, "Error", 
 						"The \"Default Auto-Start\" attribute within your {0} configuration must be set "
 						+ "to \"false\". A value of \"true\" has been detected.\n\nThe configuration will not be applied!",
 						AbstractDominoLaunchConfiguration.this.getName());
@@ -143,53 +143,30 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 
 			// Update the config.ini with any environment variables set by the
 			// configuration
-			updateConfigIni(launchHandler, configuration);
+			updateConfigIni(configuration);
 
 			// Create the pde.launch.ini
-			createPDELaunchIni(launchHandler, configuration);
+			String filePath = LaunchUtils.createPDELaunchIni(this, configuration);
 
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-					try {
-						displayMessage("Success",
-								"Successfully updated \"{0}\".\nTo run normally, please delete this file.", 
-								getPDELaunchIni(launchHandler).getAbsolutePath());
-					} catch (IOException e) {
-						MessageDialog.openError(shell, "Error", e.getMessage());
-					}
-				}
-			});
+			LaunchUtils.displayMessage(false, "Success",
+						"Successfully updated \"{0}\".\nTo run normally, please delete this file.", 
+						filePath);
 
 		} catch (final Exception e) {
 			monitor.setCanceled(true);
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					String message = e.getMessage();
-					if (e instanceof AbortException) {
-						message = "Domino OSGi launch configuration aborted by user";
-					}
-					
-					if(StringUtil.isEmpty(message)) {
-						message = e.getClass().getName();
-					}
-					
-					MessageDialog.openError(null, "Error!", message);
-				}
-			});
+			
+			String errorMessage = e.getMessage();
+			if (e instanceof AbortException) {
+				errorMessage = "Domino OSGi launch configuration aborted by user";
+			}
+			
+			if(StringUtil.isEmpty(errorMessage)) {
+				errorMessage = e.getClass().getName();
+			}
+			
+			LaunchUtils.displayMessage(true, "Error", errorMessage,	"");
+			
 		}
-	}
-
-	/**
-	 * @param configuration
-	 * @return
-	 * @throws CoreException
-	 */
-	private boolean isTargetPlatformPluginsEnabled(ILaunchConfiguration configuration) throws CoreException {
-		String selectedTargetBundles = configuration.getAttribute(IPDELauncherConstants.TARGET_BUNDLES, (String) null);
-		return selectedTargetBundles != null && selectedTargetBundles.length() > 0;
 	}
 
 	/**
@@ -198,15 +175,17 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	private void updateConfigIni(LaunchHandler config, ILaunchConfiguration configuration)
-			throws CoreException, IOException {
+	private void updateConfigIni(ILaunchConfiguration configuration) throws CoreException, IOException {
 		INotesDominoPlatform ndPlatform = this.getNotesDominoPlatform();
 		
 		File configIni = new File(getConfigDir(configuration), "config.ini");
 
 		if (!configIni.exists()) {
 			// No config ini to update
-			// TODO Error message in case? 
+			LaunchUtils.displayMessage(true,
+					"Error!",
+					"Error occured populating config.ini file. Cannot find the file '{0}'",
+					configIni.getAbsolutePath());
 			return;
 		}
 
@@ -239,8 +218,9 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 		}
 
-		if (isTargetPlatformPluginsEnabled(configuration)) {
-			// TODO Error message here
+		if (LaunchUtils.isTargetPlatformPluginsEnabled(configuration)) {
+			LaunchUtils.displayMessage(true, "Error!", "Please do not enable any target platform plugins.", "");
+			return;
 		} else {
 			// Load the properties from config.ini
 			Properties props = new Properties();
@@ -253,204 +233,60 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 				}
 			}
 
-			StringBuffer osgiBundles = new StringBuffer(props.getProperty("osgi.bundles"));
-
-			// Get the osgi.bundles key and augment it
-			String binPath = ndPlatform.getRemoteInstallFolder();
-
-			Set<String> bundlePaths = new LinkedHashSet<String>();
-			Map<String, IPluginModelBase> modelMap;
+			Collection<String> osgiBundleList = LaunchUtils.populateBundleList(props.getProperty("osgi.bundles"), ndPlatform);
 			
-			// First scan rcp folder.
-			modelMap = computeTargetModels(fAllBundles, ndPlatform.getRemoteRcpTargetFolder());
-
-			for(Map.Entry<String, IPluginModelBase> entry: modelMap.entrySet()) {
-				String id = entry.getKey();
-				IPluginModelBase bundle = entry.getValue();
-				
-				String suffix = getBundleSuffix(id);
-				
+			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpTargetFolder()));
+			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpSharedFolder()));
+			
+			String wsPluginPath = ndPlatform.getRemoteWorkspaceFolder(getSelectedProfile()) + "/applications/eclipse";
+			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, wsPluginPath));
+			
+			// TODO Add link files
+			Collection<String> linkedRepos = LaunchUtils.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
+			
+			for(String linkedRepo: linkedRepos) {
+				osgiBundleList.addAll(computeOsgiBundles(ndPlatform, LaunchUtils.toRemotePath(linkedRepo, ndPlatform)));
 			}
 			
-//			
-//			
-//			String targetBundles = computeTargetBundles_OLD(fAllBundles,
-//					binPath + "/" + getOSGIDirectoryName() + "/rcp/eclipse");
-//			if (targetBundles != null && targetBundles.length() > 0) {
-//				if (osgiBundles == null) {
-//					osgiBundles = targetBundles;
-//				} else {
-//					osgiBundles = targetBundles + "," + osgiBundles;
-//				}
-//			}
-//
-//			targetBundles = computeTargetBundles_OLD(fAllBundles,
-//					binPath + "/" + getOSGIDirectoryName() + "/shared/eclipse");
-//			if (targetBundles != null && targetBundles.length() > 0) {
-//				if (osgiBundles == null) {
-//					osgiBundles = targetBundles;
-//				} else {
-//					osgiBundles = osgiBundles + "," + targetBundles;
-//				}
-//			}
-//
-//			String dataPath = config.getDominoDataPath();
-//			dataPath = prunePath(dataPath);
-//			targetBundles = computeTargetBundles_OLD(fAllBundles,
-//					dataPath + "/" + getWorkspaceRelativePath() + "/applications/eclipse");
-//			if (targetBundles != null && targetBundles.length() > 0) {
-//				if (osgiBundles == null) {
-//					osgiBundles = targetBundles;
-//				} else {
-//					osgiBundles = osgiBundles + "," + targetBundles;
-//				}
-//			}
-//			/*
-//			 * Read all of the .link files - this will add the Upgrade Pack
-//			 * plugins to the config
-//			 */
-//			File linksDir = new File(binPath + "/" + getOSGIDirectoryName() + "/rcp/eclipse/links");
-//			if (linksDir.exists() && linksDir.isDirectory()) {
-//				File[] links = linksDir.listFiles();
-//				if (links != null) {
-//					for (File link : links) {
-//						FileReader reader = new FileReader(link);
-//						BufferedReader lineReader = new BufferedReader(reader);
-//						String linkPath = lineReader.readLine();
-//						if (!StringUtil.isEmpty(linkPath)) {
-//							if (linkPath.indexOf('=') != -1) {
-//								linkPath = linkPath.substring(linkPath.indexOf('=') + 1);
-//								int index = linkPath.indexOf(':');
-//								if (index != -1) {
-//									if (linkPath.charAt(index - 1) == '\\') {
-//										linkPath = linkPath.substring(0, index - 1) + linkPath.substring(index);
-//									}
-//
-//									// XXX link path should be modified for
-//									// remote
-//									linkPath = prunePath(linkPath);
-//									linkPath = linkPath + "/eclipse";
-//									targetBundles = computeTargetBundles_OLD(fAllBundles, linkPath);
-//									if (targetBundles != null && targetBundles.length() > 0) {
-//										if (osgiBundles == null) {
-//											osgiBundles = targetBundles;
-//										} else {
-//											osgiBundles = osgiBundles + "," + targetBundles;
-//										}
-//									}
-//								}
-//							}
-//
-//						}
-//					}
-//				}
-//			}
-//
-//			// XXX System Fragment file should be modified for remote
-//			// Add the dynamically generated fragment to the system bundle
-//			String systemFragment = getSystemFragmentFileName();
-//			if (systemFragment != null) {
-//				osgiBundles += ",reference:file:" + dataPath + "/" + getWorkspaceRelativePath()
-//						+ "/.config/domino/eclipse/plugins/" + systemFragment;
-//			}
-//
-//			props.setProperty("osgi.bundles", osgiBundles);
-//
-//			// XXX Install area should be modified for remote
-//			props.setProperty("osgi.install.area", "file:" + binPath + "/" + getOSGIDirectoryName() + "/rcp/eclipse");
-//
-//			if (osgiFrameworkModel != null) {
-//				props.put("osgi.framework", getBundleURL(osgiFrameworkModel, false));
-//			}
-//
-//			// Save the configuration
-//			FileOutputStream fos = null;
-//			try {
-//				props.store(fos = new FileOutputStream(configIni), "");
-//			} finally {
-//				if (fos != null) {
-//					fos.close();
-//				}
-//			}
-		}
-	}
+			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()) + 
+										"/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
+			osgiBundleList.add("reference:file:"+systemFragmentJar);
 
-	private String getBundleSuffix(String id) {
-		if ("org.eclipse.equinox.common".equals(id)) {
-			return "@2:start";
-		} else if ("org.eclipse.core.runtime".equals(id)) {
-			return "@start";
-		} else if ("org.eclipse.equinox.common".equals(id)) {
-			return "@2:start";
-		} else if ("org.eclipse.core.jobs".equals(id)) {
-			return "@4:start";
-		} else if ("org.eclipse.equinox.registry".equals(id)) {
-			return "@4:start";
-		} else if ("org.eclipse.equinox.preferences".equals(id)) {
-			return "@4:start";
-		}
+			StringBuffer bundles=new StringBuffer();
+			for(String osgiBundle: osgiBundleList) {
+				bundles.append(osgiBundle + "\n");
+			}
+			
+			props.setProperty("osgi.bundles", bundles.toString());
+			props.setProperty("osgi.install.area", "file:" + ndPlatform.getLocalRcpSharedFolder());
 
-		return "";
-	}
+			if (osgiFrameworkModel != null) {
+				props.put("osgi.framework", getBundleUrl(osgiFrameworkModel, false));
+			}
 
-	protected String prunePath(String path) {
-		if (!StringUtil.isEmpty(path)) {
-			if (path.endsWith("/") || path.endsWith("\\")) {
-				return path.substring(0, path.length() - 1);
+			// Save the configuration
+			FileOutputStream fos = null;
+			try {
+				props.store(fos = new FileOutputStream(configIni), "Created by OpenNTF XPages SDK");
+			} finally {
+				if (fos != null) {
+					fos.close();
+				}
 			}
 		}
-		return path;
 	}
-
-//	private ITargetPlatformService getTargetService() {
-//		return (ITargetPlatformService) PlatformUI.getWorkbench().getService(ITargetPlatformService.class);
-//	}
-//	
-//	private Map<String, TargetBundle> computeTargetBundles(Map<?, ?> workspacePlugins, String eclipseLocation) {
-//		Map<String, TargetBundle> bundleMap = new HashMap<String, TargetBundle>();
-//		
-//		ITargetLocation location = getTargetService().newDirectoryLocation(eclipseLocation);
-//		TargetBundle[] bundles = location.getBundles();
-//		
-//		// FIXME fix this
-//		if(bundles == null) {
-//			System.out.println("Nothing found: " + eclipseLocation);
-//			return bundleMap;
-//		}
-//		
-//		for (TargetBundle bundle: bundles) {
-//			String id = bundle.getBundleInfo().getSymbolicName();
-//			
-//			if ("org.eclipse.osgi".equals(id)) {
-//				osgiTargetBundle = bundle;
-//			} else {
-//				if (workspacePlugins.containsKey(id)) {
-//					// already selected, continue
-//					continue;
-//				} else {
-//					BundleInfo bundleInfo = bundle.getBundleInfo();
-//					System.out.println(bundleInfo);
-//					bundleMap.put(id, bundle);
-//				}
-//			}
-//		}		
-//		
-//		return bundleMap;
-//
-//	}
-	
 	
 	/**
 	 * @param osgiFrameworkModel2
 	 * @param b
 	 * @return
 	 */
-	private String getBundleURL(IPluginModelBase model, boolean bIncludeReference) {
+	private String getBundleUrl(IPluginModelBase model, boolean bIncludeReference) {
 		if (model == null || model.getInstallLocation() == null) {
 			return null;
 		}
 
-		// XXX getBundleURL should be modified for remote
+		// XXX getBundleURL should be modified for remote (or might be a conversion)
 		return LaunchConfigurationHelper.getBundleURL(model, bIncludeReference);
 	}
 
@@ -470,16 +306,13 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String id = model.getPluginBase().getId();
 			
 			if ("org.eclipse.osgi".equals(id)) {
-//				osgiFrameworkModel = model;
+				osgiFrameworkModel = model;
 			} else {
 				if (workspacePlugins.containsKey(id)) {
 					// already selected, continue
 					continue;
 				} else {
 					modelMap.put(id, model);
-					
-					System.out.println(getBundleURL(model, false));
-					
 				}
 			}
 		}		
@@ -487,135 +320,27 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		return modelMap;
 	}
 
-	/**
-	 * @param workspacePlugins
-	 * @param models
-	 * @return
-	 */
-	private String getTargetBundles(Map<?, ?> workspacePlugins, IPluginModelBase[] models) {
-		StringBuffer buffer = new StringBuffer();
-		for (IPluginModelBase model : models) {
-			String id = model.getPluginBase().getId();
-			// if ( "com.ibm.pvc.servlet".equals( id ) ){
-			// continue;
-			// }
-			if (workspacePlugins.containsKey(id)) {
-				if ("org.eclipse.osgi".equals(id)) {
-//					osgiFrameworkModel = model;
-				}
-				// already selected, continue
-				continue;
-			}
-			if (!"org.eclipse.osgi".equals(id)) {
-				if (buffer.length() > 0) {
-					buffer.append(",");
-				}
-				buffer.append(getBundleURL(model, true));
-				if ("org.eclipse.equinox.common".equals(id)) {
-					buffer.append("@2:start");
-				} else if ("org.eclipse.core.runtime".equals(id)) {
-					buffer.append("@start");
-				} else if ("org.eclipse.equinox.common".equals(id)) {
-					buffer.append("@2:start");
-				} else if ("org.eclipse.core.jobs".equals(id)) {
-					buffer.append("@4:start");
-				} else if ("org.eclipse.equinox.registry".equals(id)) {
-					buffer.append("@4:start");
-				} else if ("org.eclipse.equinox.preferences".equals(id)) {
-					buffer.append("@4:start");
-				}
-			} else {
-//				osgiFrameworkModel = model;
-			}
-		}
-		return buffer.toString();
-	}
-
-	/**
-	 * @param configuration
-	 * @throws IOException
-	 */
-	private void createPDELaunchIni(LaunchHandler osgiConfig, ILaunchConfiguration configuration)
-			throws IOException {
-		File pdeLaunchIniFile = getPDELaunchIni(osgiConfig);
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(pdeLaunchIniFile);
-			Properties props = new Properties();
-			props.setProperty("configuration", configuration.getName());
-
-			// XXX Modify configuration area for Remote
-			props.setProperty("osgi.configuration.area",
-					getConfigDir(configuration).getAbsolutePath().replace('\\', '/'));
-			props.store(fos, "Generated by IBM Lotus Domino OSGi Debug Plug-in");
-		} finally {
-			if (fos != null) {
-				fos.close();
-			}
-		}
-	}
-
-	/**
-	 * @param osgiConfig
-	 * @return
-	 * @throws IOException
-	 */
-	private File getPDELaunchIni(LaunchHandler osgiConfig) throws IOException {
-		// FIXME Profile support
-		String workspacePath = getNotesDominoPlatform().getRemoteWorkspaceFolder();
+	private Collection<String> computeOsgiBundles(INotesDominoPlatform ndPlatform, String remotePath) {
+		Set<String> bundles = new LinkedHashSet<String>();
 		
-		final File dominoWorkspaceDir = new File(workspacePath);
-		if (!dominoWorkspaceDir.exists() || !dominoWorkspaceDir.isDirectory()) {
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-					boolean bCreate = MessageDialog.openQuestion(shell, "Question",
-							MessageFormat.format(
-									"The directory \"{0}\" does not exist.\nThis may be because the OSGi configuration has never been run previously.\nWould you like to create it?",
-									dominoWorkspaceDir.getAbsolutePath()));
-					if (bCreate) {
-						dominoWorkspaceDir.mkdirs();
-					}
-				}
-			});
+		// Scan folder
+		Map<String, IPluginModelBase> modelMap = computeTargetModels(fAllBundles, ndPlatform.getRemoteRcpTargetFolder());
+
+		for(Map.Entry<String, IPluginModelBase> entry: modelMap.entrySet()) {
+			String id = entry.getKey();
+			IPluginModelBase bundle = entry.getValue();
+			
+			String bundleUrl = LaunchUtils.toLocalBundleUrl(getBundleUrl(bundle, false), ndPlatform);				
+			String suffix = LaunchUtils.getBundleSuffix(id);
+			// add reference\:
+			bundles.add("reference\\:" + bundleUrl + suffix);
 		}
 
-		if (!dominoWorkspaceDir.exists() || !dominoWorkspaceDir.isDirectory()) {
-			throw new AbortException();
-		}
-		return new File(dominoWorkspaceDir, "pde.launch.ini");
+		return bundles;
 	}
 	
-	
-	/**
-	 * @return the list of defined profiles
-	 */
 	public abstract INotesDominoPlatform getNotesDominoPlatform();
 	public abstract String[] getProfiles();
-
-	public String getSelectedProfile() {
-		return selectedProfile;
-	}
-
-	public void setSelectedProfile(String selectedProfile) {
-		this.selectedProfile = selectedProfile;
-	}
-
 	public abstract String getName();
-
-	protected void displayMessage(String title, String message, Object... args) {
-		final String dialogTitle = title;
-		final String dialogMessage = MessageFormat.format(message, args);
-		
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-				MessageDialog.openError(shell, dialogTitle, dialogMessage);
-			}
-		});
-
-	}
 	
 }
