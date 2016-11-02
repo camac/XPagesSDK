@@ -121,13 +121,8 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 
 			final LaunchHandler launchHandler = new LaunchHandler(this);
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					new LaunchDialog(launchHandler,
-							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).open();
-				}
-			});
+
+			PlatformUI.getWorkbench().getDisplay().syncExec(new LaunchDialog.LaunchThread(launchHandler));
 
 			if (launchHandler.getReturnCode() == IDialogConstants.CANCEL_ID) {
 				return;

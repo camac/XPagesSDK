@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.preferences.XspPreferences;
@@ -158,6 +159,21 @@ public class LaunchDialog extends TitleAreaDialog {
 		Button btn = getButton(IDialogConstants.OK_ID);
 		if (btn != null) {
 			btn.setEnabled(bSet);
+		}
+	}
+	
+	static class LaunchThread implements Runnable {
+
+		private final LaunchHandler launchHandler;
+		
+		public LaunchThread(LaunchHandler launchHandler) {
+			this.launchHandler = launchHandler;
+		}
+		
+		@Override
+		public void run() {
+			new LaunchDialog(launchHandler,
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).open();
 		}
 	}
 
