@@ -1,0 +1,18 @@
+OpenNTF XPages SDK 1.3 for Eclipse
+Copyright Serdar Basegmez 2016
+Copyright Nathan T. Freeman 2012-2014
+
+This product includes software contributed to
+OpenNTF Inc. (http://www.OpenNTF.org/)
+
+The product includes the following third-party code:
+
+Debug OSGi Plugin for IBM Lotus Domino by David Taieb and Dan O'Connor
+Licensed under Apache License 2.0
+Copyright IBM Corp. 2012
+  
+Apache Commons Lang3 version 3.3.2
+Licensed under Apache License 2.0
+Copyright 2001-2014 The Apache Software Foundation
+Available from https://commons.apache.org/
+
