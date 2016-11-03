@@ -106,7 +106,6 @@ public class XPagesLibraryPluginWizard extends NewPluginTemplateWizard {
 
 	@Override
 	public ITemplateSection[] createTemplateSections() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

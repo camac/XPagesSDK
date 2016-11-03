@@ -109,7 +109,6 @@ public class XspPreferencesPage extends FieldEditorPreferencePage implements IWo
 		doHideWhenOnStart();
 	}
 
-	// FIXME Remove "/" suffix from folders!
 	@Override
 	public boolean performOk() {
 		beforeSubmit();

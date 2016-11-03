@@ -30,7 +30,6 @@ public class XPagesLibraryWizardPage extends NewClassWizardPage {
 
 	@Override
 	protected void createSuperClassControls(Composite composite, int nColumns) {
-		// TODO Auto-generated method stub
 		super.createSuperClassControls(composite, nColumns);
 	}
 

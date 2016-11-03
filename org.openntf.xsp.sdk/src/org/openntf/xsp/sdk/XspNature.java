@@ -11,7 +11,6 @@ public class XspNature implements IProjectNature {
 	private IProject project;
 
 	public XspNature() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void configure() throws CoreException {
@@ -19,7 +18,6 @@ public class XspNature implements IProjectNature {
 	}
 
 	public void deconfigure() throws CoreException {
-		// TODO Auto-generated method stub
 	}
 
 	public IProject getProject() {
