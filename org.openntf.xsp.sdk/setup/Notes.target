@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="XPages Notes Plugin Target" sequenceNumber="110">
+<?pde version="3.8"?><target includeMode="feature" name="XPages Notes Plugin Target" sequenceNumber="111">
 <locations>
-<location path="${notes_rcp_data}\applications\eclipse" type="Directory"/>
 <location path="${notes_rcp_target}" type="Profile"/>
+<location path="${notes_rcp_data}/applications/eclipse" type="Directory"/>
 </locations>
 <environment>
 <os>win32</os>
