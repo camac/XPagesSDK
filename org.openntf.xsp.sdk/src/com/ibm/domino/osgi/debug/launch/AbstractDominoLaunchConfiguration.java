@@ -28,9 +28,11 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -43,8 +45,10 @@ import org.eclipse.pde.internal.launching.launcher.LaunchConfigurationHelper;
 import org.eclipse.pde.launching.EquinoxLaunchConfiguration;
 import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.ui.PlatformUI;
+import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.exceptions.AbortException;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.utils.CommonUtils;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
 /**
@@ -59,9 +63,10 @@ import org.openntf.xsp.sdk.utils.StringUtil;
 //@SuppressWarnings("restriction")
 public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchConfiguration {
 
-//	private TargetBundle osgiTargetBundle;
 	private IPluginModelBase osgiFrameworkModel;
 	private String selectedProfile=null;
+	
+	protected static final ILog logger = Activator.getDefault().getLog();
 	
 	/**
 	 * 
@@ -159,16 +164,14 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String errorMessage = e.getMessage();
 			if (e instanceof AbortException) {
 				errorMessage = "Domino OSGi launch configuration aborted by user";
-			} else {
-				e.printStackTrace(System.err);
 			}
 			
 			if(StringUtil.isEmpty(errorMessage)) {
 				errorMessage = e.getClass().getName();
 			}
-			
+
+			logger.log(new Status(Status.ERROR, Activator.PLUGIN_ID, errorMessage, e));
 			LaunchUtils.displayMessage(true, "Error", errorMessage,	"");
-			
 		}
 	}
 
@@ -242,16 +245,25 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String wsPluginPath = ndPlatform.getRemoteWorkspaceFolder(getSelectedProfile()) + "/applications/eclipse";
 			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, wsPluginPath));
 			
-			// TODO Add link files
 			Collection<String> linkedRepos = LaunchUtils.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
 			
 			for(String linkedRepo: linkedRepos) {
-				osgiBundleList.addAll(computeOsgiBundles(ndPlatform, LaunchUtils.toRemotePath(linkedRepo, ndPlatform)));
+				String remoteLinkPath = LaunchUtils.toRemotePath(linkedRepo, ndPlatform);
+				
+				if(CommonUtils.isEmpty(remoteLinkPath)) {
+					String message = MessageFormat.format(
+							"Your platform points in \"{0}\" via link file. We don't know how to see this directory. These bundles will be ignored.\n\n" +
+							"Please make sure all necessary link files point into a directory under your install or data folder.", linkedRepo);
+	
+					logger.log(new Status(Status.WARNING, Activator.PLUGIN_ID, message));
+				} else {
+					osgiBundleList.addAll(computeOsgiBundles(ndPlatform, remoteLinkPath));
+				}
 			}
 			
-			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()).replace('\\', '/') + 
+			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()) + 
 										"/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
-			osgiBundleList.add("reference:file:"+systemFragmentJar);
+			osgiBundleList.add("reference:file:"+LaunchUtils.fixPathSeparators(systemFragmentJar));
 
 			StringBuffer bundles=new StringBuffer();
 			for(String osgiBundle: osgiBundleList) {
@@ -262,10 +274,19 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 			
 			props.setProperty("osgi.bundles", bundles.toString());
-			props.setProperty("osgi.install.area", "file:" + ndPlatform.getLocalRcpSharedFolder().replace('\\', '/'));
+			props.setProperty("osgi.install.area", "file:" + LaunchUtils.fixPathSeparators(ndPlatform.getLocalRcpTargetFolder()));
 
 			if (osgiFrameworkModel != null) {
-				props.put("osgi.framework", getBundleUrl(osgiFrameworkModel, false));
+				String remotePath = getBundleUrl(osgiFrameworkModel, false).substring("file:".length());
+				String localPath = LaunchUtils.toLocalPath(remotePath, ndPlatform);
+				
+				if(CommonUtils.isEmpty(localPath)) {
+					String message = MessageFormat.format(
+							"Your platform needs the bundle \"{0}\" as the \"osgi.framework\". However we don't know how to see this bundle.", remotePath);
+					logger.log(new Status(Status.WARNING, Activator.PLUGIN_ID, message));
+				} else {
+					props.put("osgi.framework", "file:"+localPath);
+				}
 			}
 
 			// Save the configuration
@@ -333,10 +354,16 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String id = entry.getKey();
 			IPluginModelBase bundle = entry.getValue();
 			
-			String bundleUrl = LaunchUtils.toLocalBundleUrl(getBundleUrl(bundle, false), ndPlatform);				
 			String suffix = LaunchUtils.getBundleSuffix(id);
+			String remoteUrl = getBundleUrl(bundle, false);
+			String localPath = LaunchUtils.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
 
-			bundles.add("reference:" + bundleUrl + suffix);
+			if(CommonUtils.isEmpty(localPath)) {
+				logger.log(new Status(Status.WARNING, Activator.PLUGIN_ID, 
+							MessageFormat.format("Bundle \"{0}\" cannot be converted to a local representation.",remoteUrl)));
+			} else {
+				bundles.add("reference:file:" + localPath + suffix);
+			}
 		}
 
 		System.out.println(bundles.size() + " bundles found in '" + remotePath + "'");
