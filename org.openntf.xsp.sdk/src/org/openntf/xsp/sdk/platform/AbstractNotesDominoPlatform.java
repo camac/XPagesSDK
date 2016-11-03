@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -15,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKError;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
+import org.openntf.xsp.sdk.utils.CommonUtils;
 
 public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatform {
 
@@ -128,5 +131,31 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
 		}
 	}
 
+	@Override
+	public String resolveVariable(String variableName) throws CoreException {
+		if(CommonUtils.isEmpty(variableName)) {
+			return "";
+		}
+
+		String varName = variableName.toLowerCase(Locale.US);
+
+		if (varName.endsWith("_install")) {
+			return getRemoteInstallFolder();
+		} else if (varName.endsWith("_rcp_data")) {
+			return getRemoteWorkspaceFolder();
+		} else if (varName.endsWith("_rcp_base")) {
+			try {
+				return getRcpBase();
+			} catch (Exception e) {
+				throw new CoreException(Status.CANCEL_STATUS);
+			}
+		} else if (varName.endsWith("_rcp_target")) {
+			return getRemoteRcpTargetFolder();
+		} else if (varName.endsWith("_shared_target")) {
+			return getRemoteRcpSharedFolder();
+		}
+		
+		return "";
+	}
 	
 }

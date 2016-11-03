@@ -1,5 +1,7 @@
 package org.openntf.xsp.sdk.platform;
 
+import org.eclipse.core.runtime.CoreException;
+
 public interface INotesDominoPlatform {
 
 	public String getName();
@@ -26,4 +28,6 @@ public interface INotesDominoPlatform {
 
 	public String getRcpBase() throws Exception;
 	public String getSystemFragmentFileName();
+	
+	public String resolveVariable(String varName) throws CoreException;
 }

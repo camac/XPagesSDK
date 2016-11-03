@@ -3,11 +3,12 @@ package org.openntf.xsp.sdk.jre;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
 import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
+
+import com.ibm.domino.osgi.debug.launch.LaunchUtils;
 
 public class DynamicVariableResolver implements IDynamicVariableResolver {
 
@@ -26,23 +27,9 @@ public class DynamicVariableResolver implements IDynamicVariableResolver {
 			return "";
 		}
 
-		if (varName.endsWith("_install")) {
-			return ndPlatform.getRemoteInstallFolder();
-		} else if (varName.endsWith("_rcp_data")) {
-			return ndPlatform.getRemoteWorkspaceFolder();
-		} else if (varName.endsWith("_rcp_base")) {
-			try {
-				return ndPlatform.getRcpBase();
-			} catch (Exception e) {
-				throw new CoreException(Status.CANCEL_STATUS);
-			}
-		} else if (varName.endsWith("_rcp_target")) {
-			return ndPlatform.getRemoteRcpTargetFolder();
-		} else if (varName.endsWith("_shared_target")) {
-			return ndPlatform.getRemoteRcpSharedFolder();
-		}
+		String value = ndPlatform.resolveVariable(varName);
 		
-		return "";
-
+		return LaunchUtils.fixPathSeparators(value);
+		
 	}
 }
