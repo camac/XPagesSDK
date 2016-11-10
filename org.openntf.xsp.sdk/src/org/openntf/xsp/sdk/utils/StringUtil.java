@@ -38,7 +38,7 @@ public class StringUtil {
 	}
 
 	public static String prunePath(String path) {
-		if (!StringUtil.isEmpty(path)) {
+		if (CommonUtils.isNotEmpty(path)) {
 			if (path.endsWith("/") || path.endsWith("\\")) {
 				return path.substring(0, path.length() - 1);
 			}

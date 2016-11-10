@@ -254,7 +254,10 @@ public class LaunchUtils {
 		
 		// Is it under the Junction path?
 		if(CommonUtils.startsWithIgnoreCase(remotePath, localJunction)) {
-			return StringUtil.prunePath(remoteJunction) + remotePath.substring(localJunction.length());
+			// Fix: We need to cut off from the start.
+			int cutOffPoint = (localJunction.length()>1) ? localJunction.length() : 0;
+			
+			return StringUtil.prunePath(remoteJunction) + remotePath.substring(cutOffPoint);
 		}
 		
 		// If not, we can't support any conversion

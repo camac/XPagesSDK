@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.jre.XPagesVMSetup;
+import org.openntf.xsp.sdk.utils.CommonUtils;
 import org.openntf.xsp.sdk.utils.StaticTextFieldEditor;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
@@ -235,7 +236,13 @@ public class XspPreferencesPage extends FieldEditorPreferencePage implements IWo
 	}
 	
 	private static void fixDirectory(DirectoryFieldEditor fieldEditor) {
-		String value = StringUtil.prunePath(fieldEditor.getStringValue());
+		String value = fieldEditor.getStringValue();
+		
+		// Fix: if the path is empty or root folder ('/'), no need to prune
+		if(CommonUtils.isNotEmpty(value) && value.length()>1) { 
+			value = StringUtil.prunePath(value);
+		}
+		
 		fieldEditor.setStringValue(value);
 	}
 	
