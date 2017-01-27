@@ -54,8 +54,27 @@ As an example, suppose you are using "~/Eclipse/MyWorkspace" as the workspace di
 ### Gotchas
 
 - When using a remote scenario, "Automatically Create JRE" option will be disabled. We have good reasons for this. The primary reason is that you will probably end up with different OS'es in such a scenario and JRE will not be usable. Also, even you use the same OS, you don't want to use a JRE from a remote VM to avoid a dependency issue.
+
 - XPages SDK needs to resolve all plugins installed on your Domino server to create config.ini file. This is why we are dealing with so many conversion issues. Because to be able to detect the list of plugins loaded on Domino server, Eclipse will scan the remote Domino folders, find the plugins and write them into the config.ini file in a way Domino to access. This is the same for your plugin projects in your computer.
+
 - Domino supports .link files in OSGi. These files resides in "*domino_install*\osgi\rcp\eclipse\links" folder. These are generally used to support add-ons to the Domino server. Social plugin or Upgrade pack uses *.link* files to append their own plugins. Developers can also take advantage of link files to add additional bundles to Domino server. However, when you use a launcher from the Eclipse IDE, link files will be ignored by Domino server. So XPages SDK resolves all link files to create additional bundles if needed. One caveat here is that link files should point some directory under Domino installation or Data folder. This is already the case for the default installation.
+
+- When you start Domino server, you might see an error like: 
+
+  `com.ibm.domino.http.bootstrap.osgi.LaunchOSGIException: java.io.FileNotFoundException: Z:\<some folder>\.metadata\.plugins\org.eclipse.pde.core\HTTP OSGi Framework\links\shared.link (The system cannot find the path specified.)`
+
+  This is because of the Windows operating system. When IBM Domino server uses System account, it might not be able to access shared network drives. To test if this is the current issue, you might `load cmd` command Domino console. It will launch a command prompt process inside the console. You can check access by `dir z:\` command and if you see `The system cannot find the path specified.` error, this is the issue.
+
+  The solution changes from version to version. For my case, I have changed some UAC settings from the policy editor (Start\Run and launch `gpedit.msc` ). In "*Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options*":
+
+  - User Account Control: Only elevate UIAccess applications that are installed in secure locations: Disabled
+  - User Account Control: Turn on Admin Approval Mode: Disabled
+
+  Restart your computer after changes. You also have to run IBM Domino Server as an application, instead of a service.
+
+  In another case, defining a system share needed for VMWare (Thx to Ove Stoerholt!). Here is how: https://stackoverflow.com/questions/182750/map-a-network-drive-to-be-used-by-a-service/4763324#4763324
+
+  ​
 
 ## How to Contribute
 
