@@ -153,6 +153,19 @@
 	<!-- /Wizards -->
 	
 	<!-- Launch Configurations and related stuff -->
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			name="Designer"
+			delegate="org.openntf.xsp.sdk.launcher.DesignerLaunchConfigurationDelegate"
+			modes="run, debug"
+			id="org.openntf.xsp.sdk.launcher.Designer" />
+	</extension>
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			icon="icons/XPage.png"
+			configTypeID="org.openntf.xsp.sdk.launcher.Designer"
+			id="org.eclipse.jdt.debug.ui.launchConfigurationTypeImage.Designer" />
+	</extension>
 	<extension point="org.eclipse.pde.ui.osgiFrameworks">
 		<framework
 			id="com.ibm.domino.osgi.debug.framework"
