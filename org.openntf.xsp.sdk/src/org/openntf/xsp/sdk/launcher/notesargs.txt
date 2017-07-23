@@ -1,0 +1,5 @@
+-personality com.ibm.rcp.platform.personality
+-product com.ibm.notes.branding.notes
+-debug
+-console
+-nl en_US

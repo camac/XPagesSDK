@@ -155,17 +155,63 @@
 	<!-- Launch Configurations and related stuff -->
 	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
 		<launchConfigurationType
-			name="Designer"
+			name="IBM Notes"
+			delegate="org.openntf.xsp.sdk.launcher.NotesLaunchConfigurationDelegate"
+			modes="run, debug"
+			id="org.openntf.xsp.sdk.launcher.Notes" />
+		<launchConfigurationType
+			name="IBM Designer"
 			delegate="org.openntf.xsp.sdk.launcher.DesignerLaunchConfigurationDelegate"
 			modes="run, debug"
 			id="org.openntf.xsp.sdk.launcher.Designer" />
 	</extension>
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
-			icon="icons/XPage.png"
+			icon="icons/IBMDesigner.png"
 			configTypeID="org.openntf.xsp.sdk.launcher.Designer"
 			id="org.eclipse.jdt.debug.ui.launchConfigurationTypeImage.Designer" />
+		<launchConfigurationTypeImage
+			icon="icons/IBMNotes.png"
+			configTypeID="org.openntf.xsp.sdk.launcher.Notes"
+			id="org.eclipse.jdt.debug.ui.launchConfigurationTypeImage.Notes" />
 	</extension>
+	 <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.openntf.xsp.sdk.launcher.DesignerLaunchTabGroup"
+            helpContextId="org.eclipse.pde.doc.user.launcher_eclipse_application"
+            id="org.openntf.xsp.sdk.launcher.DesignerLauncherTabGroup"
+            type="org.openntf.xsp.sdk.launcher.Designer">
+         <launchMode
+               description="%workbenchLauncherTabGroup.description.debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               mode="debug">
+         </launchMode>
+         <launchMode
+               description="%workbenchLauncherTabGroup.description.run"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+            <launchConfigurationTabGroup
+            class="org.openntf.xsp.sdk.launcher.NotesLaunchTabGroup"
+            helpContextId="org.eclipse.pde.doc.user.launcher_eclipse_application"
+            id="org.openntf.xsp.sdk.launcher.NotesLauncherTabGroup"
+            type="org.openntf.xsp.sdk.launcher.Notes">
+         <launchMode
+               description="%workbenchLauncherTabGroup.description.debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               mode="debug">
+         </launchMode>
+         <launchMode
+               description="%workbenchLauncherTabGroup.description.run"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      
+   </extension>
+	
+	
+	
 	<extension point="org.eclipse.pde.ui.osgiFrameworks">
 		<framework
 			id="com.ibm.domino.osgi.debug.framework"

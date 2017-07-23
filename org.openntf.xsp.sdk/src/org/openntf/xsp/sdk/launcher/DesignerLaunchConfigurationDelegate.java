@@ -5,17 +5,24 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.eclipse.pde.launching.AbstractPDELaunchConfiguration;
+import org.eclipse.pde.launching.EclipseApplicationLaunchConfiguration;
 
-public class DesignerLaunchConfigurationDelegate extends AbstractPDELaunchConfiguration implements ILaunchConfigurationDelegate {
+public class DesignerLaunchConfigurationDelegate extends EclipseApplicationLaunchConfiguration
+		implements ILaunchConfigurationDelegate {
 
 	public DesignerLaunchConfigurationDelegate() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	@Override
-	public void launch(ILaunchConfiguration arg0, String arg1, ILaunch arg2, IProgressMonitor arg3) throws CoreException {
-		super.launch(arg0, arg1, arg2, arg3);
+	protected void preLaunchCheck(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor)
+			throws CoreException {
+		
+		super.preLaunchCheck(configuration, launch, monitor);
+
+		
 	}
+
+	
 
 }

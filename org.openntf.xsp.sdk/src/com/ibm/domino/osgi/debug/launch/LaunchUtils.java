@@ -278,7 +278,85 @@ public class LaunchUtils {
 				}
 			}
 		});
-	
+
+	}
+
+	// Returns contents of resource file as a String
+	public static String readResource(String resourcePath) {
+
+		StringBuilder result = new StringBuilder();
+
+		try {
+
+			URL url = Activator.getDefault().getBundle().getResource(resourcePath);
+			InputStream inputStream = url.openConnection().getInputStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+			String inputLine;
+
+			while ((inputLine = in.readLine()) != null) {
+				result.append(inputLine);
+				result.append(System.lineSeparator());
+			}
+
+			in.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result.toString();
+	}
+
+	public static void removeDuplicatePlugins(ILaunchConfigurationWorkingCopy configuration) {
+
+		try {
+
+			String test = configuration.getAttribute("selected_target_plugins", "none");
+
+			if (CommonUtils.equalsIgnoreCase(test, "none")) {
+				return;
+			}
+			
+			String[] plugins = test.split(",");
+
+			String lastPlugin = "";
+			String lastPluginId = "";
+
+			List<String> removeme = new ArrayList<String>();
+			List<String> keepme = new ArrayList<String>();
+
+			for (String plugin : plugins) {
+
+				String pluginId = plugin.split("\\*")[0];
+
+				if (lastPluginId.equals(pluginId)) {
+					removeme.add(lastPlugin);
+				} else {
+					keepme.add(lastPlugin);
+				}
+
+				lastPlugin = plugin;
+				lastPluginId = pluginId;
+			}
+
+			keepme.add(lastPlugin);
+
+			StringBuffer result = new StringBuffer();
+			for (Iterator<String> iterator = keepme.iterator(); iterator.hasNext();) {
+				String name = (String) iterator.next();
+				if (result.length() > 0) {
+					result.append(',');
+				}
+				result.append(name);
+			}
+			if (result.length() > 0) {
+				configuration.setAttribute("selected_target_plugins", result.toString());
+			}
+
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
