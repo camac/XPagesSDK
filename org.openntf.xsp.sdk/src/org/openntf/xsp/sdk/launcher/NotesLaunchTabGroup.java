@@ -16,6 +16,8 @@ import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.pde.ui.launcher.EclipseLauncherTabGroup;
 import org.openntf.xsp.sdk.Activator;
 
+import com.ibm.domino.osgi.debug.launch.LaunchUtils;
+
 public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 
 	@Override
@@ -34,6 +36,8 @@ public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 
 		configuration.setAttribute(IPDELauncherConstants.USE_PRODUCT, true);
 		configuration.setAttribute(IPDELauncherConstants.PRODUCT, "com.ibm.notes.branding.notes");
+
+		configuration.setAttribute(IPDELauncherConstants.AUTOMATIC_VALIDATE, false);
 
 		// Need to deal with spaces in Program Files Path
 		
@@ -84,6 +88,14 @@ public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 		String res = "org/openntf/xsp/sdk/launcher/notesvmargs.txt";
 		return readResource(res);
 
+	}
+	
+	@Override
+	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+
+		super.performApply(configuration);
+		LaunchUtils.removeDuplicatePlugins(configuration);
+		
 	}
 
 }

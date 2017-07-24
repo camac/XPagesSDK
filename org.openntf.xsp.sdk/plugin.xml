@@ -183,12 +183,12 @@
             id="org.openntf.xsp.sdk.launcher.DesignerLauncherTabGroup"
             type="org.openntf.xsp.sdk.launcher.Designer">
          <launchMode
-               description="%workbenchLauncherTabGroup.description.debug"
+               description="Create a Launch Config to Debug IBM Designer"
                perspective="org.eclipse.debug.ui.DebugPerspective"
                mode="debug">
          </launchMode>
          <launchMode
-               description="%workbenchLauncherTabGroup.description.run"
+               description="Create a Launch Config to Run IBM Designer"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
@@ -198,12 +198,12 @@
             id="org.openntf.xsp.sdk.launcher.NotesLauncherTabGroup"
             type="org.openntf.xsp.sdk.launcher.Notes">
          <launchMode
-               description="%workbenchLauncherTabGroup.description.debug"
+               description="Create a Launch Config to Debug IBM Notes"
                perspective="org.eclipse.debug.ui.DebugPerspective"
                mode="debug">
          </launchMode>
          <launchMode
-               description="%workbenchLauncherTabGroup.description.run"
+               description="Create a Launch Config to Run IBM Notes"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>

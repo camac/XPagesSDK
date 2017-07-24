@@ -16,7 +16,6 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 
-		// TODO Auto-generated method stub
 		super.setDefaults(configuration);
 
 		String args = getArgs();
@@ -31,7 +30,8 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 		configuration.setAttribute(IPDELauncherConstants.USE_PRODUCT, true);
 		configuration.setAttribute(IPDELauncherConstants.PRODUCT, "com.ibm.designer.domino.product.dde");
 		
-		
+		configuration.setAttribute(IPDELauncherConstants.AUTOMATIC_VALIDATE, false);
+				
 		IVMInstall jre = VMHelper.getVMInstall("XPages Notes JRE");
 		IPath jrePath = JavaRuntime.newJREContainerPath(jre);
 		String attr = jrePath.toPortableString();
