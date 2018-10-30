@@ -29,6 +29,9 @@
 
 	<developers>
 		<developer>
+			<name>Daniel Taieb</name>
+		</developer>
+		<developer>
 			<name>Nathan T. Freeman</name>
 		</developer>
 		<developer>
@@ -184,6 +187,9 @@
 			            <exclude>src/test/resources/**</exclude>
 			            <exclude>src/main/resources/**</exclude>
 						<exclude>**/build.properties</exclude>
+						<exclude>**/src/com/ibm/**</exclude>
+						<exclude>**/src/org/openntf/xsp/sdk/utils/StringUtil.java</exclude>
+						<exclude>**/src/org/openntf/xsp/sdk/utils/CommonUtils.java</exclude>
 					</excludes>
 					<properties>
 						<owner>Nathan T. Freeman, Serdar Basegmez, Jesse Gallagher</owner>
