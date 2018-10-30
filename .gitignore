@@ -1,3 +1,9 @@
+# Eclipse
+.classpath
+.project
+.settings/
 
+# Binary output
 *.class
 bin/
+target/
