@@ -2,11 +2,18 @@
 .classpath
 .project
 .settings/
+bin/
 
 # IntelliJ
 *.iml
+.idea/
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
 
 # Binary output
 *.class
-bin/
-target/
