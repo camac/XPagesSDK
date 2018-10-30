@@ -28,7 +28,7 @@
 	<!-- Local files -->
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}/../../../..</directory>
+			<directory>${project.basedir}/../../..</directory>
 			<includes>
 				<include>LICENSE</include>
 				<include>NOTICE</include>

@@ -7,7 +7,7 @@
 	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>XPages SDK</name>
+	<name>XPages SDK Eclipse and Share Components</name>
 
 	<url>https://openntf.org/main.nsf/project.xsp?r=project/NSF%20ODP%20Tooling</url>
 	<inceptionYear>2011</inceptionYear>
@@ -44,20 +44,17 @@
 	</developers>
 
 	<modules>
-        
-        <!-- Eclipse integration -->
-		<module>eclipse/bundles/org.openntf.xsp.sdk</module>
-		<module>eclipse/features/org.openntf.xsp.sdk.feature</module>
-		<module>eclipse/features/org.openntf.xsp.sdk.source.feature</module>
-		<module>eclipse/releng/org.openntf.xsp.sdk.updatesite</module>
-		<module>eclipse/releng/xpagessdk-dist-eclipse</module>
+		<module>bundles/org.openntf.xsp.sdk</module>
+		<module>features/org.openntf.xsp.sdk.feature</module>
+		<module>features/org.openntf.xsp.sdk.source.feature</module>
+		<module>releng/org.openntf.xsp.sdk.updatesite</module>
+		<module>releng/xpagessdk-dist-eclipse</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho-version>1.1.0</tycho-version>
 		<compiler>1.8</compiler>
-        <manifest-location>META-INF</manifest-location>
 		
 		<!-- Maven API version. This version should be supported by m2e -->
 		<maven.api.version>3.3.9</maven.api.version>
