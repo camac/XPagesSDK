@@ -50,6 +50,7 @@
 		<module>eclipse/features/org.openntf.xsp.sdk.feature</module>
 		<module>eclipse/features/org.openntf.xsp.sdk.source.feature</module>
 		<module>eclipse/releng/org.openntf.xsp.sdk.updatesite</module>
+		<module>eclipse/releng/xpagessdk-dist-eclipse</module>
 	</modules>
 
 	<properties>
