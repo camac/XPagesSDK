@@ -21,12 +21,23 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.openntf.xsp.sdk.Activator
 Bundle-ManifestVersion: 2
 Bundle-Vendor: OpenNTF
-Import-Package: org.apache.commons.lang,org.eclipse.core.resources,org
- .eclipse.core.variables,org.eclipse.debug.core,org.eclipse.debug.inte
- rnal.core,org.eclipse.jdt.core,org.eclipse.jdt.internal.launching,org
- .eclipse.jdt.internal.ui.wizards,org.eclipse.jdt.launching,org.eclips
- e.jdt.ui.wizards,org.eclipse.jface.preference,org.eclipse.jface.text,
- org.eclipse.swt,org.eclipse.ui.actions,org.eclipse.ui.forms,org.eclip
- se.ui.forms.widgets
+Import-Package: org.apache.commons.lang,
+ org.eclipse.core.resources,
+ org.eclipse.core.variables,
+ org.eclipse.debug.core,
+ org.eclipse.debug.internal.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.internal.launching,
+ org.eclipse.jdt.internal.ui.wizards,
+ org.eclipse.jdt.launching,
+ org.eclipse.jdt.ui.wizards,
+ org.eclipse.jface.preference,
+ org.eclipse.jface.text,
+ org.eclipse.swt,
+ org.eclipse.ui.actions,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.forms.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.plugin
 
 
