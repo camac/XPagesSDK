@@ -16,7 +16,8 @@ Bundle-Version: 1.4.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,org.eclipse.pde;bundle-version="3.8.200",
  org.eclipse.pde.ui;bundle-version="3.8.101",
- org.eclipse.equinox.frameworkadmin;bundle-version="2.0.100"
+ org.eclipse.equinox.frameworkadmin;bundle-version="2.0.100",
+ org.openntf.xsp.sdk.commons
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.openntf.xsp.sdk.Activator
@@ -39,6 +40,9 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.ui.forms,
  org.eclipse.ui.forms.widgets,
  org.eclipse.ui,
- org.eclipse.ui.plugin
+ org.eclipse.ui.plugin,
+ org.eclipse.jface,
+ org.eclipse.pde.launching,
+ org.eclipse.core.runtime
 
 

@@ -46,8 +46,9 @@ import org.eclipse.pde.launching.EquinoxLaunchConfiguration;
 import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.ui.PlatformUI;
 import org.openntf.xsp.sdk.Activator;
+import org.openntf.xsp.sdk.commons.osgi.LaunchUtil;
 import org.openntf.xsp.sdk.exceptions.AbortException;
-import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.utils.CommonUtils;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
@@ -354,7 +355,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String id = entry.getKey();
 			IPluginModelBase bundle = entry.getValue();
 			
-			String suffix = LaunchUtils.getBundleSuffix(id);
+			String suffix = LaunchUtil.getBundleSuffix(id);
 			String remoteUrl = getBundleUrl(bundle, false);
 			String localPath = LaunchUtils.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
 

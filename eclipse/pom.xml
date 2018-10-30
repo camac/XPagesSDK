@@ -44,6 +44,7 @@
 	</developers>
 
 	<modules>
+		<module>bundles/org.openntf.xsp.sdk.commons</module>
 		<module>bundles/org.openntf.xsp.sdk</module>
 		<module>features/org.openntf.xsp.sdk.feature</module>
 		<module>features/org.openntf.xsp.sdk.source.feature</module>

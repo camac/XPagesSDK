@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.exceptions.AbortException;
-import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.preferences.XspPreferences;
 import org.openntf.xsp.sdk.utils.CommonUtils;
 import org.openntf.xsp.sdk.utils.StringUtil;
@@ -28,25 +28,6 @@ import org.openntf.xsp.sdk.utils.StringUtil;
 public class LaunchUtils {
 
 	private static final ILog logger = Activator.getDefault().getLog();
-	
-	
-	public static String getBundleSuffix(String id) {
-		if ("org.eclipse.equinox.common".equals(id)) {
-			return "@2:start";
-		} else if ("org.eclipse.core.runtime".equals(id)) {
-			return "@start";
-		} else if ("org.eclipse.equinox.common".equals(id)) {
-			return "@2:start";
-		} else if ("org.eclipse.core.jobs".equals(id)) {
-			return "@4:start";
-		} else if ("org.eclipse.equinox.registry".equals(id)) {
-			return "@4:start";
-		} else if ("org.eclipse.equinox.preferences".equals(id)) {
-			return "@4:start";
-		}
-
-		return "";
-	}
 
 	/**
 	 * @param configuration
@@ -65,17 +46,14 @@ public class LaunchUtils {
 		
 		final File dominoWorkspaceDir = new File(workspacePath);
 		if (!dominoWorkspaceDir.exists() || !dominoWorkspaceDir.isDirectory()) {
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-					boolean bCreate = MessageDialog.openQuestion(shell, "Question",
-							MessageFormat.format(
-									"The directory \"{0}\" does not exist.\nThis may be because the OSGi configuration has never been run previously.\nWould you like to create it?",
-									dominoWorkspaceDir.getAbsolutePath()));
-					if (bCreate) {
-						dominoWorkspaceDir.mkdirs();
-					}
+			PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+				boolean bCreate = MessageDialog.openQuestion(shell, "Question",
+						MessageFormat.format(
+								"The directory \"{0}\" does not exist.\nThis may be because the OSGi configuration has never been run previously.\nWould you like to create it?",
+								dominoWorkspaceDir.getAbsolutePath()));
+				if (bCreate) {
+					dominoWorkspaceDir.mkdirs();
 				}
 			});
 		}
@@ -120,7 +98,7 @@ public class LaunchUtils {
 	}
 
 	public static Collection<String> populateBundleList(String osgiBundles, INotesDominoPlatform ndPlatform) {
-		Set<String> bundles = new LinkedHashSet<String>();
+		Set<String> bundles = new LinkedHashSet<>();
 		
 		for(String osgiBundle: osgiBundles.split(",")) {
 			String localPath = toJunctionPath(osgiBundle.substring("reference:file:".length()), ndPlatform);
@@ -141,7 +119,7 @@ public class LaunchUtils {
 	 * plugins to the config
 	 */
 	public static Collection<String> findLinkedRepos(File linksDir) {
-		Collection<String> linkedRepos = new LinkedHashSet<String>();
+		Collection<String> linkedRepos = new LinkedHashSet<>();
 	
 		if (linksDir.exists() && linksDir.isDirectory()) {
 			File[] links = linksDir.listFiles();
@@ -267,15 +245,12 @@ public class LaunchUtils {
 	public static void displayMessage(final boolean isError, final String title, String message, Object... args) {
 		final String dialogMessage = MessageFormat.format(message, args);
 
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-				if(isError) {
-					MessageDialog.openError(shell, title, dialogMessage);
-				} else {
-					MessageDialog.openInformation(shell, title, dialogMessage);
-				}
+		PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			if(isError) {
+				MessageDialog.openError(shell, title, dialogMessage);
+			} else {
+				MessageDialog.openInformation(shell, title, dialogMessage);
 			}
 		});
 	

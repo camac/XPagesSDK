@@ -45,6 +45,7 @@
  * permissions and limitations under the License.
    </license>
 
-   <plugin id="org.openntf.xsp.sdk.source" version="0.0.0" />
+    <plugin id="org.openntf.xsp.sdk.commons.source" version="0.0.0" />
+    <plugin id="org.openntf.xsp.sdk.source" version="0.0.0" />
 
 </feature>

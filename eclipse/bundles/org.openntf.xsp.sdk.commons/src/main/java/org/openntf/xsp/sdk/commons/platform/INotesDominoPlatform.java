@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openntf.xsp.sdk.platform;
-
-import org.eclipse.core.runtime.CoreException;
+package org.openntf.xsp.sdk.commons.platform;
 
 public interface INotesDominoPlatform {
 
@@ -44,5 +42,5 @@ public interface INotesDominoPlatform {
 	public String getRcpBase() throws Exception;
 	public String getSystemFragmentFileName();
 	
-	public String resolveVariable(String varName) throws CoreException;
+	public String resolveVariable(String varName);
 }

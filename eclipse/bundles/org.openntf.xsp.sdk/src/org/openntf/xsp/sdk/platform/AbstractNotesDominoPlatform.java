@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.openntf.xsp.sdk.Activator;
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKError;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
 import org.openntf.xsp.sdk.utils.CommonUtils;
@@ -147,7 +148,7 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
 	}
 
 	@Override
-	public String resolveVariable(String variableName) throws CoreException {
+	public String resolveVariable(String variableName) {
 		if(CommonUtils.isEmpty(variableName)) {
 			return "";
 		}
@@ -162,7 +163,7 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
 			try {
 				return getRcpBase();
 			} catch (Exception e) {
-				throw new CoreException(Status.CANCEL_STATUS);
+				throw new RuntimeException(new CoreException(Status.CANCEL_STATUS));
 			}
 		} else if (varName.endsWith("_rcp_target")) {
 			return getRemoteRcpTargetFolder();
