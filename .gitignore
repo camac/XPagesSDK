@@ -3,6 +3,9 @@
 .project
 .settings/
 
+# IntelliJ
+*.iml
+
 # Binary output
 *.class
 bin/
