@@ -15,16 +15,31 @@
  */
 package org.openntf.xsp.sdk.commons.platform;
 
+import java.util.Properties;
+
 public interface INotesDominoPlatform {
+	public static final String INIVAR_INSTALLFOLDER = "NotesProgram";
+	public static final String INIVAR_DATAFOLDER = "Directory";
+
+	Properties getNotesIniProperties();
+
+	default String getNotesIniProperty(String propertyName, String defaultValue) {
+		return getNotesIniProperties().getProperty(propertyName, defaultValue);
+	}
+
+	default String getLocalInstallFolder() {
+		return getNotesIniProperty(INIVAR_INSTALLFOLDER, "");
+	}
+
+	default String getLocalDataFolder() {
+		return getNotesIniProperty(INIVAR_DATAFOLDER, "");
+	}
 
 	public String getName();
 	public boolean isEnabled();
 	public boolean isLocal();
 	
 	public String getNotesIniFilePath();
-		
-	public String getLocalInstallFolder();
-	public String getLocalDataFolder();
 
 	public String getRemoteInstallFolder();
 	public String getRemoteDataFolder();

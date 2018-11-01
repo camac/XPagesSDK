@@ -15,15 +15,10 @@
  */
 package org.openntf.xsp.sdk.platform;
 
+import org.openntf.xsp.sdk.commons.platform.IDominoHttpPlatform;
 import org.openntf.xsp.sdk.preferences.XspPreferences;
 
-public class DominoHttpPlatformEclipse extends AbstractEclipseNotesDominoPlatform {
-
-	@Override
-	public String getName() {
-		return "Domino HTTP Platform";
-	}
-
+public class EclipseDominoHttpPlatform extends AbstractEclipseNotesDominoPlatform implements IDominoHttpPlatform {
 	@Override
 	public boolean isEnabled() {
 		String status = XspPreferences.getPreferenceString(XspPreferences.DOMINO_STATUS);
@@ -51,53 +46,6 @@ public class DominoHttpPlatformEclipse extends AbstractEclipseNotesDominoPlatfor
 	@Override
 	public String getRemoteDataFolder() {
 		return XspPreferences.getPreferenceString(XspPreferences.DOMINO_DATA_FOLDER);
-	}
-
-	@Override
-	public String getLocalRcpTargetFolder() {
-		return getLocalInstallFolder() + "/osgi/rcp/eclipse";
-	}
-
-	@Override
-	public String getRemoteRcpTargetFolder() {
-		return getRemoteInstallFolder() + "/osgi/rcp/eclipse";
-	}
-
-	@Override
-	public String getLocalRcpSharedFolder() {
-		return getLocalInstallFolder() + "/osgi/shared/eclipse";
-	}
-
-	@Override
-	public String getRemoteRcpSharedFolder() {
-		return getRemoteInstallFolder() + "/osgi/shared/eclipse";
-	}
-
-	@Override
-	public String getLocalWorkspaceFolder() {
-		return getLocalWorkspaceFolder(null);
-	}
-
-	@Override
-	public String getLocalWorkspaceFolder(String profileName) {
-		// Ignore profile name!
-		return getLocalDataFolder() + "/domino/workspace";
-	}
-
-	@Override
-	public String getRemoteWorkspaceFolder() {
-		return getRemoteWorkspaceFolder(null);
-	}
-
-	@Override
-	public String getRemoteWorkspaceFolder(String profileName) {
-		// Ignore profile name!
-		return getRemoteDataFolder() + "/domino/workspace";
-	}
-
-	@Override
-	public String getSystemFragmentFileName() {
-		return "com.ibm.domino.osgi.sharedlib_1.0.0.jar";
 	}
 
 }

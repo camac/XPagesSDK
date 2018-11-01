@@ -34,7 +34,7 @@ public class NotesDominoPlatformFactory {
 
 	public static INotesDominoPlatform getDominoHttpPlatform() {
 		if(DOMINO_HTTP_PLATFORM == null) {
-			DOMINO_HTTP_PLATFORM = new DominoHttpPlatformEclipse();
+			DOMINO_HTTP_PLATFORM = new EclipseDominoHttpPlatform();
 		}
 		
 		return DOMINO_HTTP_PLATFORM;

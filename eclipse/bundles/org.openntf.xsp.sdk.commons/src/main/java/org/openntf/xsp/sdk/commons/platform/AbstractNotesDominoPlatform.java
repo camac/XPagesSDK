@@ -15,11 +15,9 @@ import java.util.function.Consumer;
 
 public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatform {
 
-    protected static final String INIVAR_INSTALLFOLDER = "NotesProgram";
-    protected static final String INIVAR_DATAFOLDER = "Directory";
     protected Properties notesIniProperties;
 
-    protected Properties getNotesIniProperties() {
+    public Properties getNotesIniProperties() {
         if(notesIniProperties == null) {
             Properties props = new Properties();
 
@@ -33,20 +31,6 @@ public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatfor
         }
 
         return notesIniProperties;
-    }
-
-    protected String getNotesIniProperty(String propertyName, String defaultValue) {
-        return getNotesIniProperties().getProperty(propertyName, defaultValue);
-    }
-
-    @Override
-    public String getLocalInstallFolder() {
-        return getNotesIniProperty(INIVAR_INSTALLFOLDER, "");
-    }
-
-    @Override
-    public String getLocalDataFolder() {
-        return getNotesIniProperty(INIVAR_DATAFOLDER, "");
     }
 
     protected String getRcpBaseFolderPrefix() {
