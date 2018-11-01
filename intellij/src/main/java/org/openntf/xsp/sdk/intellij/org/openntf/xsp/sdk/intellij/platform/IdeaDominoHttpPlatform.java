@@ -1,100 +1,52 @@
 package org.openntf.xsp.sdk.intellij.org.openntf.xsp.sdk.intellij.platform;
 
-import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
+import org.jetbrains.annotations.NotNull;
+import org.openntf.xsp.sdk.commons.exceptions.XPagesSDKException;
+import org.openntf.xsp.sdk.commons.platform.AbstractNotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.platform.IDominoHttpPlatform;
+import org.openntf.xsp.sdk.intellij.DominoRunProperties;
 
-public class IdeaDominoHttpPlatform implements INotesDominoPlatform {
-    @Override
-    public String getName() {
-        return null;
+import java.util.HashMap;
+import java.util.Map;
+
+public class IdeaDominoHttpPlatform extends AbstractNotesDominoPlatform implements IDominoHttpPlatform {
+    private final Map<String, String> properties;
+
+    public IdeaDominoHttpPlatform(@NotNull Map<String, String> properties) {
+        this.properties = new HashMap<>(properties);
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isLocal() {
-        return false;
+       return DominoRunProperties.getLocation(properties) == DominoRunProperties.Location.LOCAL;
     }
 
     @Override
     public String getNotesIniFilePath() {
-        return null;
-    }
-
-    @Override
-    public String getLocalInstallFolder() {
-        return null;
-    }
-
-    @Override
-    public String getLocalDataFolder() {
-        return null;
+        return DominoRunProperties.getNotesIni(properties);
     }
 
     @Override
     public String getRemoteInstallFolder() {
-        return null;
+        return DominoRunProperties.getProgramDir(properties);
     }
 
     @Override
     public String getRemoteDataFolder() {
-        return null;
-    }
-
-    @Override
-    public String getLocalRcpTargetFolder() {
-        return null;
-    }
-
-    @Override
-    public String getLocalRcpSharedFolder() {
-        return null;
-    }
-
-    @Override
-    public String getLocalWorkspaceFolder() {
-        return null;
-    }
-
-    @Override
-    public String getLocalWorkspaceFolder(String profileName) {
-        return null;
-    }
-
-    @Override
-    public String getRemoteRcpTargetFolder() {
-        return null;
-    }
-
-    @Override
-    public String getRemoteRcpSharedFolder() {
-        return null;
-    }
-
-    @Override
-    public String getRemoteWorkspaceFolder() {
-        return null;
-    }
-
-    @Override
-    public String getRemoteWorkspaceFolder(String profileName) {
-        return null;
+        return DominoRunProperties.getDataDir(properties);
     }
 
     @Override
     public String getRcpBase() throws Exception {
-        return null;
-    }
-
-    @Override
-    public String getSystemFragmentFileName() {
-        return null;
-    }
-
-    @Override
-    public String resolveVariable(String varName) {
-        return null;
+        String rcpBaseFolder = findRcpBaseFolder(null);
+        if (rcpBaseFolder == null) {
+            throw new XPagesSDKException("Unable to find rcpBaseFolder!");
+        }
+        return rcpBaseFolder.replace('\\', '/');
     }
 }

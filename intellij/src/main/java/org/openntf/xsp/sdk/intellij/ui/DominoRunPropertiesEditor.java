@@ -22,8 +22,87 @@ public class DominoRunPropertiesEditor implements FrameworkRunPropertiesEditor {
     private JButton browseNotesIni;
     private JButton browseDataDir;
     private JButton browseProgramDir;
+    private JRadioButton locationLocal;
+    private JRadioButton locationRemote;
+    private JTextField sharedFolderField;
+    private JTextField mappedPathField;
+    private JButton browseSharedFolder;
 
     public DominoRunPropertiesEditor() {
+        bindEvents();
+        bindBrowseButtons();
+    }
+
+    @Override
+    public void resetEditorFrom(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
+        Map<String, String> props = osgiRunConfiguration.getAdditionalProperties();
+
+        String notesIni = DominoRunProperties.getNotesIni(props);
+        if(StringUtil.isNotEmpty(notesIni)) {
+            notesIniField.setText(notesIni);
+        }
+
+        String programDir = DominoRunProperties.getProgramDir(props);
+        if(StringUtil.isNotEmpty(programDir)) {
+            programDirField.setText(programDir);
+        }
+
+        String dataDir = DominoRunProperties.getDataDir(props);
+        if(StringUtil.isNotEmpty(dataDir)) {
+            dataDirField.setText(dataDir);
+        }
+
+        String sharedDir = DominoRunProperties.getSharedDir(props);
+        if(StringUtil.isNotEmpty(sharedDir)) {
+            sharedFolderField.setText(sharedDir);
+        }
+
+        String mappedPath = DominoRunProperties.getMappedRemotePath(props);
+        if(StringUtil.isNotEmpty(mappedPath)) {
+            mappedPathField.setText(mappedPath);
+        }
+
+        switch(DominoRunProperties.getLocation(props)) {
+            case REMOTE:
+                locationRemote.setSelected(true);
+                break;
+            case LOCAL:
+            default:
+                locationLocal.setSelected(true);
+                break;
+        }
+        updateRemoteFields();
+    }
+
+    @Override
+    public void applyEditorTo(@NotNull OsgiRunConfiguration osgiRunConfiguration) throws ConfigurationException {
+        Map<String, String> props = ContainerUtil.newHashMap();
+
+        DominoRunProperties.setNotesIni(props, notesIniField.getText());
+        DominoRunProperties.setProgramDir(props, programDirField.getText());
+        DominoRunProperties.setDataDir(props, dataDirField.getText());
+        DominoRunProperties.setSharedDir(props, sharedFolderField.getText());
+        DominoRunProperties.setMappedRemotePath(props, mappedPathField.getText());
+        DominoRunProperties.setLocation(props, getLocation());
+
+        osgiRunConfiguration.putAdditionalProperties(props);
+    }
+
+    @Override
+    public JPanel getUI() {
+        return myMainPanel;
+    }
+
+    // *******************************************************************************
+    // * Bindings
+    // *******************************************************************************
+
+    private void bindEvents() {
+        locationLocal.addActionListener(e -> updateRemoteFields());
+        locationRemote.addActionListener(e -> updateRemoteFields());
+    }
+
+    private void bindBrowseButtons() {
         browseNotesIni.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -78,41 +157,48 @@ public class DominoRunPropertiesEditor implements FrameworkRunPropertiesEditor {
                 dataDirField.setText(file.getAbsolutePath());
             }
         });
+
+        browseSharedFolder.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            String sharedDir = sharedFolderField.getText();
+            if(StringUtil.isNotEmpty(sharedDir)) {
+                chooser.setCurrentDirectory(new File(sharedDir).getParentFile());
+            }
+
+            if(chooser.showOpenDialog(myMainPanel) == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                sharedFolderField.setText(file.getAbsolutePath());
+            }
+        });
     }
 
-    @Override
-    public void resetEditorFrom(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
-        Map<String, String> props = osgiRunConfiguration.getAdditionalProperties();
+    // *******************************************************************************
+    // * Internal utility methods
+    // *******************************************************************************
 
-        String notesIni = DominoRunProperties.getNotesIni(props);
-        if(StringUtil.isNotEmpty(notesIni)) {
-            notesIniField.setText(notesIni);
-        }
-
-        String programDir = DominoRunProperties.getProgramDir(props);
-        if(StringUtil.isNotEmpty(programDir)) {
-            programDirField.setText(programDir);
-        }
-
-        String dataDir = DominoRunProperties.getDataDir(props);
-        if(StringUtil.isNotEmpty(dataDir)) {
-            dataDirField.setText(dataDir);
+    private DominoRunProperties.Location getLocation() {
+        if(locationRemote.isSelected()) {
+            return DominoRunProperties.Location.REMOTE;
+        } else {
+            return DominoRunProperties.Location.LOCAL;
         }
     }
 
-    @Override
-    public void applyEditorTo(@NotNull OsgiRunConfiguration osgiRunConfiguration) throws ConfigurationException {
-        Map<String, String> props = ContainerUtil.newHashMap();
-
-        DominoRunProperties.setNotesIni(props, notesIniField.getText());
-        DominoRunProperties.setProgramDir(props, programDirField.getText());
-        DominoRunProperties.setDataDir(props, dataDirField.getText());
-
-        osgiRunConfiguration.putAdditionalProperties(props);
-    }
-
-    @Override
-    public JPanel getUI() {
-        return myMainPanel;
+    private void updateRemoteFields() {
+        switch(getLocation()) {
+            case REMOTE:
+                sharedFolderField.setEnabled(true);
+                mappedPathField.setEnabled(true);
+                browseSharedFolder.setEnabled(true);
+                break;
+            case LOCAL:
+            default:
+                sharedFolderField.setEnabled(false);
+                mappedPathField.setEnabled(false);
+                browseSharedFolder.setEnabled(false);
+                break;
+        }
     }
 }
