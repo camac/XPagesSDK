@@ -29,6 +29,7 @@ public class LaunchDialog extends JDialog {
 
         setPreferredSize(new Dimension(750, 300));
         setResizable(false);
+        setLocationRelativeTo(null);
 
         buttonOK.addActionListener(e -> dispose());
 
