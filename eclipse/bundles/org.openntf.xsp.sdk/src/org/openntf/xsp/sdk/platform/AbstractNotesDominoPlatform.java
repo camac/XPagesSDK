@@ -33,7 +33,7 @@ import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKError;
 import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
-import org.openntf.xsp.sdk.utils.CommonUtils;
+import org.openntf.xsp.sdk.commons.utils.CommonUtils;
 
 public abstract class AbstractNotesDominoPlatform implements INotesDominoPlatform {
 

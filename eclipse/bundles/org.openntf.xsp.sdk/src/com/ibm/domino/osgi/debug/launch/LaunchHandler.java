@@ -19,7 +19,7 @@ import java.io.File;
 
 import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
-import org.openntf.xsp.sdk.utils.StringUtil;
+import org.openntf.xsp.sdk.commons.utils.StringUtil;
 
 /**
  * @author dtaieb Hold information about the Domino OSGi configuration

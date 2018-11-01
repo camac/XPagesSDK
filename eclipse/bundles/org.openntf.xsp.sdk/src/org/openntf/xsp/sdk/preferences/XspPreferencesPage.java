@@ -27,9 +27,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.jre.XPagesVMSetup;
-import org.openntf.xsp.sdk.utils.CommonUtils;
+import org.openntf.xsp.sdk.commons.utils.CommonUtils;
 import org.openntf.xsp.sdk.utils.StaticTextFieldEditor;
-import org.openntf.xsp.sdk.utils.StringUtil;
+import org.openntf.xsp.sdk.commons.utils.StringUtil;
 
 public class XspPreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	

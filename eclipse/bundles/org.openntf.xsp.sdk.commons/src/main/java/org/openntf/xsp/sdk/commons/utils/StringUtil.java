@@ -14,9 +14,9 @@
  * permissions and limitations under the License.
  */
 
-package org.openntf.xsp.sdk.utils;
+package org.openntf.xsp.sdk.commons.utils;
 
-/**
+ /**
  * @author dtaieb
  *
  */

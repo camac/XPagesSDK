@@ -5,5 +5,6 @@ Bundle-Version: 1.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ManifestVersion: 2
 Bundle-Vendor: OpenNTF
-Export-Package: org.openntf.xsp.sdk.commons.osgi;version="1.4.0.qualifier",
- org.openntf.xsp.sdk.commons.platform;version="1.4.0.qualifier"
+Export-Package: org.openntf.xsp.sdk.commons.osgi;version="1.4.0",
+ org.openntf.xsp.sdk.commons.platform;version="1.4.0",
+ org.openntf.xsp.sdk.commons.utils;version="1.4.0"

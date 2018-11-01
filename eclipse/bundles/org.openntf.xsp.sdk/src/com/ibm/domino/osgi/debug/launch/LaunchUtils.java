@@ -19,11 +19,12 @@ import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.openntf.xsp.sdk.Activator;
+import org.openntf.xsp.sdk.commons.osgi.LaunchUtil;
 import org.openntf.xsp.sdk.exceptions.AbortException;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.preferences.XspPreferences;
-import org.openntf.xsp.sdk.utils.CommonUtils;
-import org.openntf.xsp.sdk.utils.StringUtil;
+import org.openntf.xsp.sdk.commons.utils.CommonUtils;
+import org.openntf.xsp.sdk.commons.utils.StringUtil;
 
 public class LaunchUtils {
 
@@ -86,9 +87,9 @@ public class LaunchUtils {
 	}
 
 	public static String getConfigDir(AbstractDominoLaunchConfiguration dominoLaunch, ILaunchConfiguration configuration) {
-		String configDir = fixPathSeparators(dominoLaunch.getConfigDir(configuration).getAbsolutePath()); 
+		String configDir = LaunchUtil.fixPathSeparators(dominoLaunch.getConfigDir(configuration).getAbsolutePath());
 		
-		String result = toJunctionPath(configDir, dominoLaunch.getNotesDominoPlatform());
+		String result = LaunchUtil.toJunctionPath(configDir, dominoLaunch.getNotesDominoPlatform(), XspPreferences.getPreferenceString(XspPreferences.LOCAL_JUNCTION), XspPreferences.getPreferenceString(XspPreferences.REMOTE_JUNCTION));
 		
 		if(CommonUtils.isEmpty(result)) {
 			throw new RuntimeException("Unable to convert the configuration directory into a local representation (" + configDir + ")");
@@ -101,7 +102,7 @@ public class LaunchUtils {
 		Set<String> bundles = new LinkedHashSet<>();
 		
 		for(String osgiBundle: osgiBundles.split(",")) {
-			String localPath = toJunctionPath(osgiBundle.substring("reference:file:".length()), ndPlatform);
+			String localPath = LaunchUtil.toJunctionPath(osgiBundle.substring("reference:file:".length()), ndPlatform, XspPreferences.getPreferenceString(XspPreferences.LOCAL_JUNCTION), XspPreferences.getPreferenceString(XspPreferences.REMOTE_JUNCTION));
 			
 			if(CommonUtils.isEmpty(localPath)) {
 				String message = MessageFormat.format("Unable to convert the bundle \"{0}\" to a local representation. Check your settings.", osgiBundle);
@@ -153,14 +154,6 @@ public class LaunchUtils {
 		return linkedRepos;
 	}
 
-	public static String fixPathSeparators(String path) {
-		if(CommonUtils.isEmpty(path)) {
-			return "";
-		}
-		
-		return path.replace('\\', '/');
-	}
-
 	public static String toLocalPath(String remotePath, INotesDominoPlatform ndPlatform) {
 		// We trust Eclipse classes on that incoming url should be well formed in terms of path separators.
 		if(ndPlatform.isLocal()) {
@@ -168,8 +161,8 @@ public class LaunchUtils {
 			return remotePath;
 		}
 		
-		String localInstall = fixPathSeparators(ndPlatform.getLocalInstallFolder());
-		String localData = fixPathSeparators(ndPlatform.getLocalDataFolder());
+		String localInstall = LaunchUtil.fixPathSeparators(ndPlatform.getLocalInstallFolder());
+		String localData = LaunchUtil.fixPathSeparators(ndPlatform.getLocalDataFolder());
 		
 		// Is it under install directory?
 		if(CommonUtils.startsWithIgnoreCase(remotePath, ndPlatform.getRemoteInstallFolder())) {
@@ -186,15 +179,15 @@ public class LaunchUtils {
 	}
 	
 	public static String toRemotePath(String localPath, INotesDominoPlatform ndPlatform) {
-		String result = fixPathSeparators(localPath);
+		String result = LaunchUtil.fixPathSeparators(localPath);
 		
 		if (ndPlatform.isLocal()) {
 			// no change needed
 			return result;
 		}
 		
-		String localInstall = fixPathSeparators(ndPlatform.getLocalInstallFolder());
-		String localData = fixPathSeparators(ndPlatform.getLocalDataFolder());
+		String localInstall = LaunchUtil.fixPathSeparators(ndPlatform.getLocalInstallFolder());
+		String localData = LaunchUtil.fixPathSeparators(ndPlatform.getLocalDataFolder());
 		
 		// Is it under install directory?
 		if(CommonUtils.startsWithIgnoreCase(result, localInstall)) {
@@ -204,38 +197,6 @@ public class LaunchUtils {
 		// Is it under data directory?
 		if(CommonUtils.startsWithIgnoreCase(result, localData)) {
 			return ndPlatform.getRemoteDataFolder() + localPath.substring(localData.length());
-		}
-		
-		// If not, we can't support any conversion
-		return null;
-	}
-	
-	public static String toJunctionPath(String remotePath, INotesDominoPlatform ndPlatform) {
-		// We trust Eclipse classes on that incoming url should be well formed in terms of path separators.
-		if(ndPlatform.isLocal()) {
-			// no change needed.
-			return remotePath;
-		}
-		
-		/** 
-		 * The naming might be confusing here. Here is the explanation:
-		 * 
-		 * The local junction is local to the Eclipse machine. For example, it's your home folder (/Users/HomerSimpson)
-		 * The remote junction is how the remote machine access it. For example, suppose you have mapped your home folder as (Z:\) in the Domino machine.
-		 * 
-		 * The magic will work only if your project files and Eclipse files are UNDER your junction point.
-		 * 	
-		 */
-		
-		String localJunction = XspPreferences.getPreferenceString(XspPreferences.LOCAL_JUNCTION);
-		String remoteJunction = fixPathSeparators(XspPreferences.getPreferenceString(XspPreferences.REMOTE_JUNCTION));
-		
-		// Is it under the Junction path?
-		if(CommonUtils.startsWithIgnoreCase(remotePath, localJunction)) {
-			// Fix: We need to cut off from the start.
-			int cutOffPoint = (localJunction.length()>1) ? localJunction.length() : 0;
-			
-			return StringUtil.prunePath(remoteJunction) + remotePath.substring(cutOffPoint);
 		}
 		
 		// If not, we can't support any conversion

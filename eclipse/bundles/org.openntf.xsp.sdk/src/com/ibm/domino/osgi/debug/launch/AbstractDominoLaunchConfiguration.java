@@ -49,8 +49,8 @@ import org.openntf.xsp.sdk.Activator;
 import org.openntf.xsp.sdk.commons.osgi.LaunchUtil;
 import org.openntf.xsp.sdk.exceptions.AbortException;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
-import org.openntf.xsp.sdk.utils.CommonUtils;
-import org.openntf.xsp.sdk.utils.StringUtil;
+import org.openntf.xsp.sdk.commons.utils.CommonUtils;
+import org.openntf.xsp.sdk.commons.utils.StringUtil;
 
 /**
  * @author dtaieb
@@ -177,7 +177,6 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 	}
 
 	/**
-	 * @param config
 	 * @param configuration
 	 * @throws CoreException
 	 * @throws IOException
@@ -264,7 +263,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			
 			String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder(getSelectedProfile()) + 
 										"/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
-			osgiBundleList.add("reference:file:"+LaunchUtils.fixPathSeparators(systemFragmentJar));
+			osgiBundleList.add("reference:file:"+LaunchUtil.fixPathSeparators(systemFragmentJar));
 
 			StringBuffer bundles=new StringBuffer();
 			for(String osgiBundle: osgiBundleList) {
@@ -275,7 +274,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 			
 			props.setProperty("osgi.bundles", bundles.toString());
-			props.setProperty("osgi.install.area", "file:" + LaunchUtils.fixPathSeparators(ndPlatform.getLocalRcpTargetFolder()));
+			props.setProperty("osgi.install.area", "file:" + LaunchUtil.fixPathSeparators(ndPlatform.getLocalRcpTargetFolder()));
 
 			if (osgiFrameworkModel != null) {
 				String remotePath = getBundleUrl(osgiFrameworkModel, false).substring("file:".length());
@@ -303,8 +302,8 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 	}
 	
 	/**
-	 * @param osgiFrameworkModel2
-	 * @param b
+	 * @param model
+	 * @param bIncludeReference
 	 * @return
 	 */
 	private String getBundleUrl(IPluginModelBase model, boolean bIncludeReference) {

@@ -20,7 +20,7 @@
  * Modifications copyright (C) 2016 Serdar Basegmez
  * 
  */
-package org.openntf.xsp.sdk.utils;
+package org.openntf.xsp.sdk.commons.utils;
 
 public class CommonUtils {
 
