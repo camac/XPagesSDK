@@ -18,7 +18,7 @@ package com.ibm.domino.osgi.debug.launch;
 import java.io.File;
 
 import org.openntf.xsp.sdk.exceptions.XPagesSDKException;
-import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.utils.StringUtil;
 
 /**

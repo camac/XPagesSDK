@@ -15,7 +15,7 @@ package com.ibm.domino.osgi.debug.launch;
 import java.util.HashSet;
 
 import org.openntf.xsp.sdk.Activator;
-import org.openntf.xsp.sdk.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
 
 /**

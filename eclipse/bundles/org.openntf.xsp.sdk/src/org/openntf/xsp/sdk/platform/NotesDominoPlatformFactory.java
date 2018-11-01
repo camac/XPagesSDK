@@ -15,6 +15,8 @@
  */
 package org.openntf.xsp.sdk.platform;
 
+import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
+
 public class NotesDominoPlatformFactory {
 
 	private static INotesDominoPlatform NOTES_PLATFORM;
