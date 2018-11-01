@@ -182,7 +182,9 @@ public enum LaunchUtil {
 
             if(CommonUtils.isEmpty(localPath)) {
                 String message = MessageFormat.format("Unable to convert the bundle \"{0}\" to a local representation. Check your settings.", osgiBundle);
-                logConsumer.accept(message);
+                if(logConsumer != null) {
+                    logConsumer.accept(message);
+                }
             } else {
                 bundles.add("reference:file:"+localPath);
             }
