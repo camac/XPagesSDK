@@ -20,10 +20,9 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
+import org.openntf.xsp.sdk.commons.osgi.LaunchUtil;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
 import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
-
-import com.ibm.domino.osgi.debug.launch.LaunchUtils;
 
 public class DynamicVariableResolver implements IDynamicVariableResolver {
 
@@ -44,7 +43,7 @@ public class DynamicVariableResolver implements IDynamicVariableResolver {
 
 		String value = ndPlatform.resolveVariable(varName);
 		
-		return LaunchUtils.fixPathSeparators(value);
+		return LaunchUtil.fixPathSeparators(value);
 		
 	}
 }

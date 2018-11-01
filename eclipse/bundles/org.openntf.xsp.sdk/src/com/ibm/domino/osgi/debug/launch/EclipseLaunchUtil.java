@@ -26,7 +26,7 @@ import org.openntf.xsp.sdk.preferences.XspPreferences;
 import org.openntf.xsp.sdk.commons.utils.CommonUtils;
 import org.openntf.xsp.sdk.commons.utils.StringUtil;
 
-public class LaunchUtils {
+public class EclipseLaunchUtil {
 
 	private static final ILog logger = Activator.getDefault().getLog();
 

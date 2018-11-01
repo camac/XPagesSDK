@@ -120,7 +120,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			boolean autostart = configuration.getAttribute(IPDELauncherConstants.DEFAULT_AUTO_START, true);
 			if (autostart) {
 				// Auto-start must be set to false!
-				LaunchUtils.displayMessage(true, "Error", 
+				EclipseLaunchUtil.displayMessage(true, "Error",
 						"The \"Default Auto-Start\" attribute within your {0} configuration must be set "
 						+ "to \"false\". A value of \"true\" has been detected.\n\nThe configuration will not be applied!",
 						AbstractDominoLaunchConfiguration.this.getName());
@@ -153,9 +153,9 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			updateConfigIni(configuration);
 
 			// Create the pde.launch.ini
-			String filePath = LaunchUtils.createPDELaunchIni(this, configuration);
+			String filePath = EclipseLaunchUtil.createPDELaunchIni(this, configuration);
 
-			LaunchUtils.displayMessage(false, "Success",
+			EclipseLaunchUtil.displayMessage(false, "Success",
 						"Successfully updated \"{0}\".\nTo run normally, please delete this file.", 
 						filePath);
 
@@ -172,7 +172,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 
 			logger.log(new Status(Status.ERROR, Activator.PLUGIN_ID, errorMessage, e));
-			LaunchUtils.displayMessage(true, "Error", errorMessage,	"");
+			EclipseLaunchUtil.displayMessage(true, "Error", errorMessage,	"");
 		}
 	}
 
@@ -223,7 +223,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			}
 		}
 
-		if (LaunchUtils.isTargetPlatformPluginsEnabled(configuration)) {
+		if (EclipseLaunchUtil.isTargetPlatformPluginsEnabled(configuration)) {
 			throw new RuntimeException("Please do not enable any target platform plugins.");
 		} else {
 			// Load the properties from config.ini
@@ -237,7 +237,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 				}
 			}
 
-			Collection<String> osgiBundleList = LaunchUtils.populateBundleList(props.getProperty("osgi.bundles"), ndPlatform);
+			Collection<String> osgiBundleList = EclipseLaunchUtil.populateBundleList(props.getProperty("osgi.bundles"), ndPlatform);
 			
 			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpTargetFolder()));
 			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpSharedFolder()));
@@ -245,10 +245,10 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String wsPluginPath = ndPlatform.getRemoteWorkspaceFolder(getSelectedProfile()) + "/applications/eclipse";
 			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, wsPluginPath));
 			
-			Collection<String> linkedRepos = LaunchUtils.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
+			Collection<String> linkedRepos = EclipseLaunchUtil.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
 			
 			for(String linkedRepo: linkedRepos) {
-				String remoteLinkPath = LaunchUtils.toRemotePath(linkedRepo, ndPlatform);
+				String remoteLinkPath = EclipseLaunchUtil.toRemotePath(linkedRepo, ndPlatform);
 				
 				if(CommonUtils.isEmpty(remoteLinkPath)) {
 					String message = MessageFormat.format(
@@ -278,7 +278,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 
 			if (osgiFrameworkModel != null) {
 				String remotePath = getBundleUrl(osgiFrameworkModel, false).substring("file:".length());
-				String localPath = LaunchUtils.toLocalPath(remotePath, ndPlatform);
+				String localPath = EclipseLaunchUtil.toLocalPath(remotePath, ndPlatform);
 				
 				if(CommonUtils.isEmpty(localPath)) {
 					String message = MessageFormat.format(
@@ -356,7 +356,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			
 			String suffix = LaunchUtil.getBundleSuffix(id);
 			String remoteUrl = getBundleUrl(bundle, false);
-			String localPath = LaunchUtils.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
+			String localPath = EclipseLaunchUtil.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
 
 			if(CommonUtils.isEmpty(localPath)) {
 				logger.log(new Status(Status.WARNING, Activator.PLUGIN_ID, 
