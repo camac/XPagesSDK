@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openntf.xsp.sdk.exceptions;
+package org.openntf.xsp.sdk.commons.exceptions;
 
 public class XPagesSDKException extends Exception {
 	private static final long serialVersionUID = -8494891316568927762L;

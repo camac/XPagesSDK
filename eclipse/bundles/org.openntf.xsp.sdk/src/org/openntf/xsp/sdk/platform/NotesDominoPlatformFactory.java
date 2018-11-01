@@ -26,7 +26,7 @@ public class NotesDominoPlatformFactory {
 		
 	public static INotesDominoPlatform getNotesPlatform() {
 		if(NOTES_PLATFORM == null) {
-			NOTES_PLATFORM = new NotesPlatform();
+			NOTES_PLATFORM = new EclipseNotesPlatform();
 		}
 		
 		return NOTES_PLATFORM;
@@ -34,7 +34,7 @@ public class NotesDominoPlatformFactory {
 
 	public static INotesDominoPlatform getDominoHttpPlatform() {
 		if(DOMINO_HTTP_PLATFORM == null) {
-			DOMINO_HTTP_PLATFORM = new DominoHttpPlatform();
+			DOMINO_HTTP_PLATFORM = new DominoHttpPlatformEclipse();
 		}
 		
 		return DOMINO_HTTP_PLATFORM;
@@ -42,7 +42,7 @@ public class NotesDominoPlatformFactory {
 
 	public static INotesDominoPlatform getDominoDotsPlatform() {
 		if(DOMINO_DOTS_PLATFORM == null) {
-			DOMINO_DOTS_PLATFORM = new DominoDotsPlatform();
+			DOMINO_DOTS_PLATFORM = new DominoDotsPlatformEclipse();
 		}
 		
 		return DOMINO_DOTS_PLATFORM;

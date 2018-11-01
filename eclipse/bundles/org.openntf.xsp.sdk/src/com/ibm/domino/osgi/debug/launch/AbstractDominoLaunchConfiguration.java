@@ -245,10 +245,10 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			String wsPluginPath = ndPlatform.getRemoteWorkspaceFolder(getSelectedProfile()) + "/applications/eclipse";
 			osgiBundleList.addAll(computeOsgiBundles(ndPlatform, wsPluginPath));
 			
-			Collection<String> linkedRepos = EclipseLaunchUtil.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
+			Collection<String> linkedRepos = LaunchUtil.findLinkedRepos(new File(ndPlatform.getRemoteRcpTargetFolder() + "/links"));
 			
 			for(String linkedRepo: linkedRepos) {
-				String remoteLinkPath = EclipseLaunchUtil.toRemotePath(linkedRepo, ndPlatform);
+				String remoteLinkPath = LaunchUtil.toRemotePath(linkedRepo, ndPlatform);
 				
 				if(CommonUtils.isEmpty(remoteLinkPath)) {
 					String message = MessageFormat.format(
@@ -278,7 +278,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 
 			if (osgiFrameworkModel != null) {
 				String remotePath = getBundleUrl(osgiFrameworkModel, false).substring("file:".length());
-				String localPath = EclipseLaunchUtil.toLocalPath(remotePath, ndPlatform);
+				String localPath = LaunchUtil.toLocalPath(remotePath, ndPlatform);
 				
 				if(CommonUtils.isEmpty(localPath)) {
 					String message = MessageFormat.format(
@@ -356,7 +356,7 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 			
 			String suffix = LaunchUtil.getBundleSuffix(id);
 			String remoteUrl = getBundleUrl(bundle, false);
-			String localPath = EclipseLaunchUtil.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
+			String localPath = LaunchUtil.toLocalPath(remoteUrl.substring("file:".length()), ndPlatform);
 
 			if(CommonUtils.isEmpty(localPath)) {
 				logger.log(new Status(Status.WARNING, Activator.PLUGIN_ID, 

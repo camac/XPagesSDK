@@ -16,7 +16,7 @@
 package org.openntf.xsp.sdk.platform;
 
 // Most of the features are the same as Domino HTTP
-public class DominoDotsPlatform extends DominoHttpPlatform {
+public class DominoDotsPlatformEclipse extends DominoHttpPlatformEclipse {
 
 	@Override
 	public String getName() {
