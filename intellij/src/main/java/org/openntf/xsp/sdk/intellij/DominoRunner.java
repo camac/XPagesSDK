@@ -140,7 +140,7 @@ public class DominoRunner extends AbstractFrameworkRunner {
         String remoteDir = DominoRunProperties.getMappedRemotePath(configuration.getAdditionalProperties());
 
         String osgiBundles = configuration.getBundlesToDeploy().stream()
-                .map(b -> b.getBundlePath())
+                .map(SelectedBundle::getBundlePath)
                 .map(path -> "reference:file:" + path)
                 .collect(Collectors.joining(","));
         System.out.println("Got osgiBundles " + osgiBundles);
