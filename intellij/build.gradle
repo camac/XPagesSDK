@@ -1,19 +1,6 @@
-buildscript {
-    ext.kotlin_version = '1.2.51'
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '0.3.12'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.51'
 }
 
 group 'org.openntf.xsp'
@@ -29,7 +16,6 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.openntf.xsp', name: 'org.openntf.xsp.sdk.commons', version: project.version
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8'
 }
 
 intellij {
