@@ -1,20 +1,15 @@
 package org.openntf.xsp.sdk.intellij;
 
-import com.google.protobuf.ByteString;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.util.JavaParametersUtil;
-import com.intellij.facet.FacetManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.impl.OrderEntryUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.osgi.jps.build.CachingBundleInfoProvider;
@@ -27,11 +22,14 @@ import org.osmorc.frameworkintegration.impl.AbstractFrameworkRunner;
 import org.osmorc.run.OsgiRunConfiguration;
 import org.osmorc.run.ui.SelectedBundle;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -110,7 +108,7 @@ public class DominoRunner extends AbstractFrameworkRunner {
 //        String filePath = LaunchUtil.createPDELaunchIni(configIni.toFile(), getConfigDir(osgiRunConfiguration), osgiRunConfiguration.getName());
     }
 
-    public static String getConfigDir(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
+    private static String getConfigDir(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
         String configDir = osgiRunConfiguration.getWorkingDir();
         String localDir = DominoRunProperties.getSharedDir(osgiRunConfiguration.getAdditionalProperties());
         String remoteDir = DominoRunProperties.getMappedRemotePath(osgiRunConfiguration.getAdditionalProperties());
@@ -178,7 +176,7 @@ public class DominoRunner extends AbstractFrameworkRunner {
                 "/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
         osgiBundleList.add("reference:file:"+LaunchUtil.fixPathSeparators(systemFragmentJar));
         
-        String bundles = osgiBundleList.stream().collect(Collectors.joining(","));
+        String bundles = String.join(",", osgiBundleList);
 
         props.setProperty("osgi.bundles", bundles);
         props.setProperty("osgi.install.area", "file:" + LaunchUtil.fixPathSeparators(ndPlatform.getLocalRcpTargetFolder()));
@@ -202,6 +200,9 @@ public class DominoRunner extends AbstractFrameworkRunner {
             Path modulePath = Paths.get(ModuleUtil.getModuleDirPath(module));
 
             VirtualFile outputDir = CompilerPaths.getModuleOutputDirectory(module, false);
+            if(outputDir == null) {
+                return;
+            }
             Path outputPath = Paths.get(outputDir.getPath());
 
             Path relativeOutput = modulePath.relativize(outputPath);
@@ -236,7 +237,7 @@ public class DominoRunner extends AbstractFrameworkRunner {
             if(embeddedLibs.isEmpty()) {
                 devProperties.setProperty(module.getName(), relativeOutput.toString());
             } else {
-                String paths = relativeOutput.toString() + "," + embeddedLibs.stream().collect(Collectors.joining(","));
+                String paths = relativeOutput.toString() + "," + String.join(",", embeddedLibs);
                 devProperties.setProperty(module.getName(), paths);
             }
         });
