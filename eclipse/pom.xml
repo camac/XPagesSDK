@@ -7,7 +7,7 @@
 	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>XPages SDK Eclipse and Share Components</name>
+	<name>XPages SDK Eclipse and Shared Components</name>
 
 	<url>https://openntf.org/main.nsf/project.xsp?r=project/NSF%20ODP%20Tooling</url>
 	<inceptionYear>2011</inceptionYear>
@@ -46,8 +46,12 @@
 	<modules>
 		<module>bundles/org.openntf.xsp.sdk.commons</module>
 		<module>bundles/org.openntf.xsp.sdk</module>
+
 		<module>features/org.openntf.xsp.sdk.feature</module>
 		<module>features/org.openntf.xsp.sdk.source.feature</module>
+
+		<module>tests/org.openntf.xsp.sdk.test</module>
+
 		<module>releng/org.openntf.xsp.sdk.updatesite</module>
 		<module>releng/xpagessdk-dist-eclipse</module>
 	</modules>
@@ -125,6 +129,16 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+
+				<configuration>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<providerHint>junit4</providerHint>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -218,18 +232,6 @@
 					<version>2.21.0</version>
 					<configuration>
 						<argLine>-ea -Dfile.encoding=UTF-8</argLine>
-					</configuration>
-				</plugin>
-				<!-- This is to enable test execution only on supported platforms below -->
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-surefire-plugin</artifactId>
-					<version>${tycho-version}</version>
-					
-					<configuration>
-						<skip>true</skip>
-						<argLine>-Dfile.encoding=UTF-8</argLine>
-						<providerHint>junit4</providerHint>
 					</configuration>
 				</plugin>
 				<plugin>
