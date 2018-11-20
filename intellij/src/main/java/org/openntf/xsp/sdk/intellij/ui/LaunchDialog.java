@@ -1,6 +1,5 @@
 package org.openntf.xsp.sdk.intellij.ui;
 
-import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 import org.openntf.xsp.sdk.intellij.DominoRunProperties;
 import org.osmorc.run.OsgiRunConfiguration;
@@ -17,10 +16,11 @@ public class LaunchDialog extends JDialog {
     private JEditorPane infoPane;
     private JTextField programDirField;
     private JTextField dataDirField;
+    private JButton buttonCancel;
 
     private final OsgiRunConfiguration osgiRunConfiguration;
 
-    public LaunchDialog(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
+    public LaunchDialog(@NotNull OsgiRunConfiguration osgiRunConfiguration, Runnable callback) {
         this.osgiRunConfiguration = osgiRunConfiguration;
 
         setContentPane(contentPane);
@@ -31,7 +31,13 @@ public class LaunchDialog extends JDialog {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        buttonOK.addActionListener(e -> dispose());
+        buttonOK.addActionListener(e -> {
+            dispose();
+            if(callback != null) {
+                callback.run();
+            }
+        });
+        buttonCancel.addActionListener(e -> dispose());
 
         infoPane.setText(
             MessageFormat.format(
