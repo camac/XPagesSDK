@@ -18,44 +18,57 @@ package org.openntf.xsp.sdk.commons.platform;
 import java.util.Properties;
 
 public interface INotesDominoPlatform {
-	public static final String INIVAR_INSTALLFOLDER = "NotesProgram";
-	public static final String INIVAR_DATAFOLDER = "Directory";
+	String INIVAR_INSTALLFOLDER = "NotesProgram";
+	String INIVAR_DATAFOLDER = "Directory";
 
 	Properties getNotesIniProperties();
 
+	/**
+	 * Reads the specified property from the configured notes.ini
+	 *
+	 * @param propertyName the INI property to read, case-sensitive
+	 * @param defaultValue the default value to return if the property is not set
+	 * @return the value of the property, or the default value if it is not set
+	 */
 	default String getNotesIniProperty(String propertyName, String defaultValue) {
 		return getNotesIniProperties().getProperty(propertyName, defaultValue);
 	}
 
+	/**
+	 * @return the program directory on the target Notes/Domino installation, according to the notes.ini
+	 */
 	default String getLocalInstallFolder() {
 		return getNotesIniProperty(INIVAR_INSTALLFOLDER, "");
 	}
 
+	/**
+	 * @return the data directory on the target Notes/Domino installation, according to the notes.ini
+	 */
 	default String getLocalDataFolder() {
 		return getNotesIniProperty(INIVAR_DATAFOLDER, "");
 	}
 
-	public String getName();
-	public boolean isEnabled();
-	public boolean isLocal();
+	String getName();
+	boolean isEnabled();
+	boolean isLocal();
 	
-	public String getNotesIniFilePath();
+	String getNotesIniFilePath();
 
-	public String getRemoteInstallFolder();
-	public String getRemoteDataFolder();
+	String getRemoteInstallFolder();
+	String getRemoteDataFolder();
 
-	public String getLocalRcpTargetFolder();
-	public String getLocalRcpSharedFolder();
-	public String getLocalWorkspaceFolder();
-	public String getLocalWorkspaceFolder(String profileName);
+	String getLocalRcpTargetFolder();
+	String getLocalRcpSharedFolder();
+	String getLocalWorkspaceFolder();
+	String getLocalWorkspaceFolder(String profileName);
 
-	public String getRemoteRcpTargetFolder();
-	public String getRemoteRcpSharedFolder();
-	public String getRemoteWorkspaceFolder();
-	public String getRemoteWorkspaceFolder(String profileName);
+	String getRemoteRcpTargetFolder();
+	String getRemoteRcpSharedFolder();
+	String getRemoteWorkspaceFolder();
+	String getRemoteWorkspaceFolder(String profileName);
 
-	public String getRcpBase() throws Exception;
-	public String getSystemFragmentFileName();
+	String getRcpBase() throws Exception;
+	String getSystemFragmentFileName();
 	
-	public String resolveVariable(String varName);
+	String resolveVariable(String varName);
 }
