@@ -114,7 +114,6 @@ public class DominoRunner extends AbstractFrameworkRunner {
         // Create the pde.launch.ini
         Path dataDir = Paths.get(DominoRunProperties.getDataDir(osgiRunConfiguration.getAdditionalProperties()));
         Path configIni = dataDir.resolve("domino").resolve("workspace").resolve("pde.launch.ini");
-        System.out.println("Going to write config with configDir=" + getConfigDir(osgiRunConfiguration) + ", ini=" + configIni + ", name=" + osgiRunConfiguration.getName());
         try {
             String filePath = LaunchUtil.createPDELaunchIni(configIni.toFile(), getConfigDir(osgiRunConfiguration), osgiRunConfiguration.getName());
 
