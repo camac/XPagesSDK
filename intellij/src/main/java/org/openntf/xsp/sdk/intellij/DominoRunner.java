@@ -9,6 +9,10 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.MessageDialogBuilder;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.messages.MessageDialog;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +115,13 @@ public class DominoRunner extends AbstractFrameworkRunner {
         Path dataDir = Paths.get(DominoRunProperties.getDataDir(osgiRunConfiguration.getAdditionalProperties()));
         Path configIni = dataDir.resolve("domino").resolve("workspace").resolve("pde.launch.ini");
         System.out.println("Going to write config with configDir=" + getConfigDir(osgiRunConfiguration) + ", ini=" + configIni + ", name=" + osgiRunConfiguration.getName());
-//        String filePath = LaunchUtil.createPDELaunchIni(configIni.toFile(), getConfigDir(osgiRunConfiguration), osgiRunConfiguration.getName());
+        try {
+            String filePath = LaunchUtil.createPDELaunchIni(configIni.toFile(), getConfigDir(osgiRunConfiguration), osgiRunConfiguration.getName());
+
+            Messages.showInfoMessage("Success", MessageFormat.format("Successfully updated \"{0}\".\nTo run normally, please delete this file.", filePath));
+        } catch(Throwable t) {
+            Messages.showErrorDialog(osgiRunConfiguration.getProject(),"Error Writing pde.launch.ini", t.getMessage());
+        }
     }
 
     private static String getConfigDir(@NotNull OsgiRunConfiguration osgiRunConfiguration) {
@@ -152,10 +162,6 @@ public class DominoRunner extends AbstractFrameworkRunner {
                 .map(path -> toReferenceUrl(path, localSharedDir, remoteMappedPath))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        // TODO create dev.properties in local work folder to point to the classpaths of each project, e.g.
-        //   com.tinkerpop=target/classes,lib/collections-generic-4.01.jar,lib/com.google.guava_18.0.1.jar,lib/javassist_3.18.2.jar
-        // And @ignoredot@=true for some reason
-
         osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpTargetFolder()));
         osgiBundleList.addAll(computeOsgiBundles(ndPlatform, ndPlatform.getRemoteRcpSharedFolder()));
 
@@ -178,6 +184,8 @@ public class DominoRunner extends AbstractFrameworkRunner {
             }
         }
 
+        // Do we need to also create this file? I don't see where it's created in the Eclipse version, but
+        //   it could be coming from some internal Eclipse code
         String systemFragmentJar = ndPlatform.getLocalWorkspaceFolder() +
                 "/.config/domino/eclipse/plugins/" + ndPlatform.getSystemFragmentFileName();
         osgiBundleList.add("reference:file:"+LaunchUtil.fixPathSeparators(systemFragmentJar));
@@ -189,7 +197,13 @@ public class DominoRunner extends AbstractFrameworkRunner {
         props.setProperty("osgi.bundles.defaultStartLevel", String.valueOf(configuration.getDefaultStartLevel()));
         props.setProperty("osgi.configuration.cascaded", "false");
 
-        // TODO figure out osgi.framework, which in AbstractDominoLaunchConfiguration is found by getting the bundle named org.eclipse.osgi when scanning bundles
+        // Figure out osgi.framework, which in AbstractDominoLaunchConfiguration is found by getting the bundle named org.eclipse.osgi when scanning bundles
+        String osgiFrameworkPath = osgiBundleList.stream()
+                .filter(path -> path.contains("/org.eclipse.osgi_"))
+                .findFirst()
+                .get() // We want to throw an exception if it's not found
+                .substring("reference:".length());
+        props.setProperty("osgi.framework", osgiFrameworkPath);
 
         // Save the configuration
         Files.createDirectories(configIni.getParent());
@@ -281,7 +295,7 @@ public class DominoRunner extends AbstractFrameworkRunner {
      * Creates the "com.ibm.domino.osgi.sharedlib" fragment jar in the local working environment
      */
     private void createSharedLibJar(@NotNull OsgiRunConfiguration configuration) throws IOException {
-        Path jarPath = Paths.get(configuration.getWorkingDir(), "domino", "eclipse", "plugins", "com.ibm.domino.osgi.sharedlib_1.0.0.jar");
+        Path jarPath = Paths.get(configuration.getWorkingDir(), "domino", "eclipse", "plugins", ndPlatform.getSystemFragmentFileName());
         Files.createDirectories(jarPath.getParent());
         try(OutputStream os = Files.newOutputStream(jarPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
             try(JarOutputStream jos = new JarOutputStream(os)) {
