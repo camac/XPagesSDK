@@ -32,7 +32,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.jar.Attributes;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 public class DominoRunner extends AbstractFrameworkRunner {
     private IdeaDominoHttpPlatform ndPlatform;
@@ -100,6 +104,8 @@ public class DominoRunner extends AbstractFrameworkRunner {
 
         // Create local working dir links folder
         createLocalLinksFiles(osgiRunConfiguration);
+
+        createSharedLibJar(osgiRunConfiguration);
 
         // Create the pde.launch.ini
         Path dataDir = Paths.get(DominoRunProperties.getDataDir(osgiRunConfiguration.getAdditionalProperties()));
@@ -271,6 +277,31 @@ public class DominoRunner extends AbstractFrameworkRunner {
         }
     }
 
+    /**
+     * Creates the "com.ibm.domino.osgi.sharedlib" fragment jar in the local working environment
+     */
+    private void createSharedLibJar(@NotNull OsgiRunConfiguration configuration) throws IOException {
+        Path jarPath = Paths.get(configuration.getWorkingDir(), "domino", "eclipse", "plugins", "com.ibm.domino.osgi.sharedlib_1.0.0.jar");
+        Files.createDirectories(jarPath.getParent());
+        try(OutputStream os = Files.newOutputStream(jarPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            try(JarOutputStream jos = new JarOutputStream(os)) {
+                ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
+                jos.putNextEntry(manifestEntry);
+
+                Manifest manifest = new Manifest();
+                Attributes attrs = manifest.getMainAttributes();
+                attrs.putValue("Manifest-Version", "1.0");
+                attrs.putValue("Bundle-SymbolicName", "com.ibm.domino.osgi.sharedlib");
+                attrs.putValue("Export-Package", "lotus.domino, com.ibm.domino.http.bootstrap.osgi");
+                attrs.putValue("Bundle-Name", "Domino/OSGI Shared library bundle");
+                attrs.putValue("Bundle-Version", "1.0.0");
+                attrs.putValue("Bundle-ManifestVersion", "2");
+                attrs.putValue("Fragment-Host", "system.bundle; extension:=framework");
+                manifest.write(jos);
+            }
+        }
+    }
+
     // *******************************************************************************
     // * Utility methods
     // *******************************************************************************
@@ -291,7 +322,6 @@ public class DominoRunner extends AbstractFrameworkRunner {
     }
 
     private Collection<String> computeOsgiBundles(INotesDominoPlatform ndPlatform, String remotePath) throws IOException {
-        // TODO figure out - this should bring in the existing OSGi bundles, e.g. reference\:file\:C\:/Domino/osgi/shared/eclipse/plugins/com.ibm.langware.v5.dic.sv_SE_7.2.0.201111100545
         Path plugins = Paths.get(remotePath).resolve("plugins");
         if(Files.isDirectory(plugins)) {
             return Files.find(plugins, 1, (path, attrs) -> {
