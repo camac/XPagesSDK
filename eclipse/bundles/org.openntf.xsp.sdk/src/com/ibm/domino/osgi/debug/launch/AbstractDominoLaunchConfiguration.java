@@ -18,8 +18,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -323,7 +327,29 @@ public abstract class AbstractDominoLaunchConfiguration extends EquinoxLaunchCon
 		Map<String, IPluginModelBase> modelMap = new HashMap<String, IPluginModelBase>();
 		
 		URL[] pluginPaths = PluginPathFinder.getPluginPaths(eclipseLocation, false);
-		PDEState pdeState = new PDEState(pluginPaths, true, true, new NullProgressMonitor());
+		PDEState pdeState;
+		// The signature for PDEState's constructor changed in Eclipse 2019-03
+		// https://github.com/eclipse/eclipse.pde.ui/commit/3db2f1e50aa7ae5efc0e07a1f26eecedd80a7159#diff-a56311895a435ece21aa9ef829607884
+		Constructor<PDEState> ctor;
+		try {
+			// Check for the 2019-03 version
+			ctor = PDEState.class.getConstructor(URI[].class, boolean.class, boolean.class, IProgressMonitor.class);
+			URI[] pluginPathURIs = Arrays.stream(pluginPaths).map(u -> URI.create(u.toString().replace(" ", "%20"))).toArray(URI[]::new);
+			pdeState = ctor.newInstance(pluginPathURIs, true, true, new NullProgressMonitor());
+		} catch(NoSuchMethodException e1) {
+			// Failing that, check for the pre-2019-03 version
+			try {
+				ctor = PDEState.class.getConstructor(URL[].class, boolean.class, boolean.class, IProgressMonitor.class);
+				pdeState = ctor.newInstance(pluginPaths, true, true, new NullProgressMonitor());
+			} catch(NoSuchMethodException e2) {
+				throw new RuntimeException("Unable to locate usable constructor for PDEState", e2);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e2a) {
+				throw new RuntimeException("Unable to create PDEState", e2a);
+			}
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1a) {
+			throw new RuntimeException("Unable to create PDEState", e1a);
+		}
+		
 		IPluginModelBase[] models = pdeState.getTargetModels();
 
 		for (IPluginModelBase model : models) {
