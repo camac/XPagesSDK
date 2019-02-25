@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.openntf.xsp'
-version '1.4.0-SNAPSHOT'
+version '1.4.0'
 
 sourceCompatibility = 1.8
 
@@ -15,15 +15,26 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.openntf.xsp', name: 'org.openntf.xsp.sdk.commons', version: project.version
+    compile group: 'org.openntf.xsp', name: 'org.openntf.xsp.sdk.commons', version: "1.4.0-SNAPSHOT"
 }
 
 intellij {
     version '2018.2.5'
     plugins "Osmorc:1.4.12"
+
+    pluginName "XPages SDK"
+    intellij.updateSinceUntilBuild false
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      This initial version of the XPages SDK for IntelliJ allows for running
+      a Domino server's HTTP OSGi environment using OSGi projects in your
+      IntelliJ workspace."""
+}
+
+publishPlugin {
+    username intellijPublishUsername
+    password intellijPublishPassword
+
+    channels "beta"
 }
