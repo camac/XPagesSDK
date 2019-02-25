@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.openntf.xsp', name: 'org.openntf.xsp.sdk.commons', version: "1.4.0-SNAPSHOT"
+    compile group: 'org.openntf.xsp', name: 'org.openntf.xsp.sdk.commons', version: "1.4.0"
 }
 
 intellij {
