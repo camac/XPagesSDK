@@ -86,6 +86,7 @@
 				<configuration>
 					<source>${compiler}</source>
 					<target>${compiler}</target>
+					<compilerArgument>-err:-forbidden,discouraged,deprecation</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -115,6 +116,7 @@
 				<configuration>
 					<source>${compiler}</source>
 					<target>${compiler}</target>
+					<compilerArgument>-err:-forbidden,discouraged,deprecation</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
