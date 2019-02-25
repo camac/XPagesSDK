@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XPages SDK Compile-Time Tests
+Bundle-SymbolicName: org.openntf.xsp.sdk.test
+Automatic-Module-Name: org.openntf.xsp.sdk.test
+Bundle-Version: 1.4.0.qualifier
+Fragment-Host: org.openntf.xsp.sdk
+Require-Bundle: org.junit;bundle-version="4.0.0"
