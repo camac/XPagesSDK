@@ -16,7 +16,7 @@ import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.pde.ui.launcher.EclipseLauncherTabGroup;
 import org.openntf.xsp.sdk.Activator;
 
-import com.ibm.domino.osgi.debug.launch.LaunchUtils;
+import com.ibm.domino.osgi.debug.launch.EclipseLaunchUtil;
 
 public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 
@@ -94,7 +94,7 @@ public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 
 		super.performApply(configuration);
-		LaunchUtils.removeDuplicatePlugins(configuration);
+		EclipseLaunchUtil.removeDuplicatePlugins(configuration);
 		
 	}
 

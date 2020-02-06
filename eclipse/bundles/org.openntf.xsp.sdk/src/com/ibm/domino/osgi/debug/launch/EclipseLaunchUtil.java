@@ -1,14 +1,22 @@
 package com.ibm.domino.osgi.debug.launch;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.swt.widgets.Shell;
@@ -92,7 +100,85 @@ public class EclipseLaunchUtil {
 				MessageDialog.openInformation(shell, title, dialogMessage);
 			}
 		});
-	
+
+	}
+
+	// Returns contents of resource file as a String
+	public static String readResource(String resourcePath) {
+
+		StringBuilder result = new StringBuilder();
+
+		try {
+
+			URL url = Activator.getDefault().getBundle().getResource(resourcePath);
+			InputStream inputStream = url.openConnection().getInputStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+			String inputLine;
+
+			while ((inputLine = in.readLine()) != null) {
+				result.append(inputLine);
+				result.append(System.lineSeparator());
+			}
+
+			in.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result.toString();
+	}
+
+	public static void removeDuplicatePlugins(ILaunchConfigurationWorkingCopy configuration) {
+
+		try {
+
+			String test = configuration.getAttribute("selected_target_plugins", "none");
+
+			if (CommonUtils.equalsIgnoreCase(test, "none")) {
+				return;
+			}
+
+			String[] plugins = test.split(",");
+
+			String lastPlugin = "";
+			String lastPluginId = "";
+
+			List<String> removeme = new ArrayList<String>();
+			List<String> keepme = new ArrayList<String>();
+
+			for (String plugin : plugins) {
+
+				String pluginId = plugin.split("\\*")[0];
+
+				if (lastPluginId.equals(pluginId)) {
+					removeme.add(lastPlugin);
+				} else {
+					keepme.add(lastPlugin);
+				}
+
+				lastPlugin = plugin;
+				lastPluginId = pluginId;
+			}
+
+			keepme.add(lastPlugin);
+
+			StringBuffer result = new StringBuffer();
+			for (Iterator<String> iterator = keepme.iterator(); iterator.hasNext();) {
+				String name = (String) iterator.next();
+				if (result.length() > 0) {
+					result.append(',');
+				}
+				result.append(name);
+			}
+			if (result.length() > 0) {
+				configuration.setAttribute("selected_target_plugins", result.toString());
+			}
+
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

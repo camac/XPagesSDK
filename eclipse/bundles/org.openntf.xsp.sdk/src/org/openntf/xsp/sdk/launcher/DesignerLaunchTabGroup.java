@@ -9,7 +9,7 @@ import org.eclipse.pde.internal.launching.launcher.VMHelper;
 import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.pde.ui.launcher.EclipseLauncherTabGroup;
 
-import com.ibm.domino.osgi.debug.launch.LaunchUtils;
+import com.ibm.domino.osgi.debug.launch.EclipseLaunchUtil;
 
 public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 
@@ -44,7 +44,7 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 	private String getArgs() {
 		
 		String res = "org/openntf/xsp/sdk/launcher/designerargs.txt";
-		return LaunchUtils.readResource(res);
+		return EclipseLaunchUtil.readResource(res);
 		
 	}
 	
@@ -52,7 +52,7 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 	private String getVmArgs() {
 
 		String res = "org/openntf/xsp/sdk/launcher/designervmargs.txt";
-		return LaunchUtils.readResource(res);
+		return EclipseLaunchUtil.readResource(res);
 
 	}
 
@@ -60,7 +60,7 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 
 		super.performApply(configuration);
-		LaunchUtils.removeDuplicatePlugins(configuration);
+		EclipseLaunchUtil.removeDuplicatePlugins(configuration);
 		
 	}
 
