@@ -22,8 +22,8 @@ import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
 import org.openntf.xsp.sdk.commons.osgi.LaunchUtil;
 import org.openntf.xsp.sdk.commons.platform.INotesDominoPlatform;
+import org.openntf.xsp.sdk.commons.utils.StringUtil;
 import org.openntf.xsp.sdk.platform.NotesDominoPlatformFactory;
-import org.openntf.xsp.sdk.utils.StringUtil;
 
 public class DynamicVariableResolver implements IDynamicVariableResolver {
 
@@ -44,11 +44,11 @@ public class DynamicVariableResolver implements IDynamicVariableResolver {
 
 		String value = ndPlatform.resolveVariable(varName);
 		if (!StringUtil.isEmpty(value)) {
-			// On Windows need to use 8.3 format for some arguments 
+			// On Windows need to use 8.3 format for some arguments
 			value = value.replace("Program Files (x86)", "Progra~2");
 		}
-		
+
 		return LaunchUtil.fixPathSeparators(value);
-		
+
 	}
 }
