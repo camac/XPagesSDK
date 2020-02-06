@@ -57,6 +57,11 @@
 			description="Notes RCP Run Target"
 			supportsArgument="false" />
 		<variable
+			name="notes_shared_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Notes Shared Run Target"
+			supportsArgument="false" />
+		<variable
 			name="domino_install"
 			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
 			description="Installation folder for IBM Lotus Domino"
@@ -110,6 +115,10 @@
 			id="org.openntf.xsp.sdk.NotesTarget"
 			name="Notes Install Target"
 			definition="setup/Notes.target" />
+		<target
+			id="org.openntf.xsp.sdk.Notes11Target"
+			name="Notes 11 Target"
+			definition="setup/Notes11.target" />
 		<target
 			id="org.openntf.xsp.sdk.DominoTarget"
 			name="Domino Install Target"

@@ -1,0 +1,6 @@
+-vm ${notes_install}/jvm/bin\j9vm\jvm.dll
+-personality com.ibm.designer.domino.personality
+-product com.ibm.designer.domino.product.dde
+-debug
+-console
+-nl en_US

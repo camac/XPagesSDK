@@ -45,7 +45,7 @@ public class DynamicVariableResolver implements IDynamicVariableResolver {
 		String value = ndPlatform.resolveVariable(varName);
 		if (!StringUtil.isEmpty(value)) {
 			// On Windows need to use 8.3 format for some arguments
-			value = value.replace("Program Files (x86)", "Progra~2");
+			//value = value.replace("Program Files (x86)", "Progra~2");
 		}
 
 		return LaunchUtil.fixPathSeparators(value);
