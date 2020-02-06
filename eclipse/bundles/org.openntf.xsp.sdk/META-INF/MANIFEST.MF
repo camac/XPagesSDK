@@ -6,6 +6,7 @@ Export-Package: com.ibm.domino.osgi.debug.actions,
  org.openntf.xsp.sdk.components,
  org.openntf.xsp.sdk.exceptions,
  org.openntf.xsp.sdk.jre,
+ org.openntf.xsp.sdk.launcher,
  org.openntf.xsp.sdk.platform,
  org.openntf.xsp.sdk.preferences,
  org.openntf.xsp.sdk.templates,
@@ -14,10 +15,12 @@ Export-Package: com.ibm.domino.osgi.debug.actions,
 Bundle-Name: XPages SDK
 Bundle-Version: 1.4.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,org.eclipse.pde;bundle-version="3.8.200",
+ org.eclipse.ui,
+ org.eclipse.pde;bundle-version="3.8.200",
  org.eclipse.pde.ui;bundle-version="3.8.101",
  org.eclipse.equinox.frameworkadmin;bundle-version="2.0.100",
- org.openntf.xsp.sdk.commons
+ org.openntf.xsp.sdk.commons,
+ org.eclipse.debug.ui;bundle-version="3.11.200"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.openntf.xsp.sdk.Activator
