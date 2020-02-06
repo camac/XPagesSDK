@@ -1,0 +1,17 @@
+<idea-plugin>
+    <id>org.openntf.xsp.xpagessdk-intellij</id>
+    <name>XPages SDK</name>
+    <vendor email="info@openntf.org" url="http://openntf.org">OpenNTF</vendor>
+    <idea-version since-build="182"/>
+
+    <description><![CDATA[
+    The XPages SDK allows for creating an OSGi framework configuration to run IBM Domino's
+    HTTP stack using OSGi plugins from your IntelliJ workspace.
+    ]]></description>
+
+    <depends>Osmorc</depends>
+
+    <extensions defaultExtensionNs="Osmorc">
+        <frameworkIntegrator implementation="org.openntf.xsp.sdk.intellij.DominoIntegrator"/>
+    </extensions>
+</idea-plugin>

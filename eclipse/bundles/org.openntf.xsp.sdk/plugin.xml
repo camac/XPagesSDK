@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright © 2011-2018 Nathan T. Freeman, Serdar Basegmez, Jesse Gallagher
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<?eclipse version="3.4"?>
+<plugin>
+	<!-- Preference Settings -->
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			class="org.openntf.xsp.sdk.preferences.XspPreferencesPage"
+			id="org.openntf.xsp.sdk.page"
+			name="XPages SDK">
+		</page>
+	</extension>
+	<extension
+		id="org.openntf.xsp.sdk"
+		point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="org.openntf.xsp.sdk.preferences.XspPreferencesInitializer" />
+	</extension>
+	<!-- /Preference Settings -->
+
+	<!-- Dynamic Variable Settings -->
+	<extension point="org.eclipse.core.variables.dynamicVariables">
+		<variable
+			name="notes_install"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Installation folder for IBM Lotus Notes"
+			supportsArgument="false" />
+		<variable
+			name="notes_rcp_data"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Notes RCP Workspace"
+			supportsArgument="false" />
+		<variable
+			name="notes_rcp_base"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Notes RCP Base install folder"
+			supportsArgument="false" />
+		<variable
+			name="notes_rcp_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Notes RCP Run Target"
+			supportsArgument="false" />
+		<variable
+			name="domino_install"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Installation folder for IBM Lotus Domino"
+			supportsArgument="false" />
+		<variable
+			name="domino_rcp_data"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Domino OSGi Workspace"
+			supportsArgument="false" />
+		<variable
+			name="domino_rcp_base"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Domino RCP Base install folder"
+			supportsArgument="false" />
+		<variable
+			name="domino_rcp_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Domino OSGi Run Target"
+			supportsArgument="false" />
+		<variable
+			name="domino_shared_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="Domino OSGi Shared Target"
+			supportsArgument="false" />
+		<variable
+			name="dots_rcp_data"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="DOTS Workspace"
+			supportsArgument="false" />
+		<variable
+			name="dots_rcp_base"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="DOTS RCP Base install folder"
+			supportsArgument="false" />
+		<variable
+			name="dots_rcp_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="DOTS Run Target"
+			supportsArgument="false" />
+		<variable
+			name="dots_shared_target"
+			resolver="org.openntf.xsp.sdk.jre.DynamicVariableResolver"
+			description="DOTS Shared Target"
+			supportsArgument="false" />
+	</extension>
+	<!-- /Dynamic Variable Settings -->
+	
+	<!-- Target Platforms -->
+	<extension point="org.eclipse.pde.core.targets">
+		<target
+			id="org.openntf.xsp.sdk.NotesTarget"
+			name="Notes Install Target"
+			definition="setup/Notes.target" />
+		<target
+			id="org.openntf.xsp.sdk.DominoTarget"
+			name="Domino Install Target"
+			definition="setup/Domino.target" />
+		<target
+			id="org.openntf.xsp.sdk.DOTSTarget"
+			name="DOTS Install Target"
+			definition="setup/DOTS.target" />
+	</extension>
+	<!-- /Target Platforms -->
+
+	<!-- Nature and Product definition -->
+	<extension
+		id="org.openntf.xsp.sdk.XspNature"
+		name="XPages Nature"
+		point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run class="org.openntf.xsp.sdk.XspNature" />
+		</runtime>
+	</extension>
+	<extension
+		id="OpenNTFDomino"
+		point="org.eclipse.core.runtime.products">
+		<product
+			application="org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher"
+			name="OpenNTF Domino Definition" />
+	</extension>
+	<!-- /Nature and Product definition -->
+
+	<!-- Wizards -->
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			name="XPages SDK"
+			id="org.openntf.xsp.sdk" />
+		<wizard
+			category="org.openntf.xsp.sdk"
+			class="org.openntf.xsp.sdk.wizard.NewXPagesLibraryCreationWizard"
+			icon="icons/XPage.png"
+			id="org.openntf.xsp.sdk.NewXPagesLibraryCreationWizard"
+			name="XPages Library">
+			<description>New XPages Library</description>
+		</wizard>
+	</extension>
+	<extension point="org.eclipse.pde.ui.pluginContent">
+		<!-- contribute to plugin wizards -->
+		<wizard
+			class="org.openntf.xsp.sdk.templates.XPagesLibraryProject"
+			icon="icons/XPage.png"
+			id="org.openntf.xsp.sdk.templates.XPagesLibraryProject"
+			java="true"
+			rcp="false"
+			name="XPages Library Project"
+			ui-content="false">
+			<description>Get yer XPages on!!</description>
+		</wizard>
+		<!-- /contribute to rcp wizards -->
+	</extension>
+	<!-- /Wizards -->
+	
+	<!-- Launch Configurations and related stuff -->
+	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			name="IBM Notes"
+			delegate="org.openntf.xsp.sdk.launcher.NotesLaunchConfigurationDelegate"
+			modes="run, debug"
+			id="org.openntf.xsp.sdk.launcher.Notes" />
+		<launchConfigurationType
+			name="IBM Designer"
+			delegate="org.openntf.xsp.sdk.launcher.DesignerLaunchConfigurationDelegate"
+			modes="run, debug"
+			id="org.openntf.xsp.sdk.launcher.Designer" />
+	</extension>
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			icon="icons/IBMDesigner.png"
+			configTypeID="org.openntf.xsp.sdk.launcher.Designer"
+			id="org.eclipse.jdt.debug.ui.launchConfigurationTypeImage.Designer" />
+		<launchConfigurationTypeImage
+			icon="icons/IBMNotes.png"
+			configTypeID="org.openntf.xsp.sdk.launcher.Notes"
+			id="org.eclipse.jdt.debug.ui.launchConfigurationTypeImage.Notes" />
+	</extension>
+	 <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.openntf.xsp.sdk.launcher.DesignerLaunchTabGroup"
+            helpContextId="org.eclipse.pde.doc.user.launcher_eclipse_application"
+            id="org.openntf.xsp.sdk.launcher.DesignerLauncherTabGroup"
+            type="org.openntf.xsp.sdk.launcher.Designer">
+         <launchMode
+               description="Create a Launch Config to Debug IBM Designer"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               mode="debug">
+         </launchMode>
+         <launchMode
+               description="Create a Launch Config to Run IBM Designer"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+            <launchConfigurationTabGroup
+            class="org.openntf.xsp.sdk.launcher.NotesLaunchTabGroup"
+            helpContextId="org.eclipse.pde.doc.user.launcher_eclipse_application"
+            id="org.openntf.xsp.sdk.launcher.NotesLauncherTabGroup"
+            type="org.openntf.xsp.sdk.launcher.Notes">
+         <launchMode
+               description="Create a Launch Config to Debug IBM Notes"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               mode="debug">
+         </launchMode>
+         <launchMode
+               description="Create a Launch Config to Run IBM Notes"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      
+   </extension>
+	
+	
+	
+	<extension point="org.eclipse.pde.ui.osgiFrameworks">
+		<framework
+			id="com.ibm.domino.osgi.debug.framework"
+			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerHttp"
+			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationHttp"
+			name="Domino OSGi Framework" />
+		<framework
+			id="com.ibm.domino.osgi.debug.dots.framework"
+			initializer="com.ibm.domino.osgi.debug.launch.LaunchInitializerDots"
+			launcherDelegate="com.ibm.domino.osgi.debug.launch.LaunchConfigurationDots"
+			name="Domino Tasklet Framework (DOTS)" />
+	</extension>
+	<!-- /Launch Configurations and related stuff -->
+	
+	<!-- Create Notes Java Api Project -->
+	<extension
+		point="org.eclipse.ui.actionSets">
+		<actionSet
+			id="com.ibm.domino.osgi.debug.actionSet"
+			label="Domino OSGi Actions"
+			visible="true">
+			<action
+				class="com.ibm.domino.osgi.debug.actions.CreateNotesJavaApiProject"
+				icon="icons/XPage.png"
+				id="com.ibm.domino.osgi.debug.actions.CreateNotesJavaApiProject"
+				label="&amp;Create Notes Java Api Project"
+				menubarPath="project/additions"
+				toolbarPath="project/additions"
+				tooltip="Create Notes Java Api Project">
+			</action>
+		</actionSet>
+	</extension>
+	<!-- /Create Notes Java Api Project -->
+	
+</plugin>
