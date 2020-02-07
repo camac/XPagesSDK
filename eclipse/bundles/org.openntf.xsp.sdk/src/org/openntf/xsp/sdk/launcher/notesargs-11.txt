@@ -1,0 +1,1 @@
+-clean -console -debug -log -personality com.ibm.rcp.platform.personality -config notes
