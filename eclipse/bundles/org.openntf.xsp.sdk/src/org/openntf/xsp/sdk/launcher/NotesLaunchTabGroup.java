@@ -26,10 +26,10 @@ public class NotesLaunchTabGroup extends EclipseLauncherTabGroup {
 		super.setDefaults(configuration);
 
 		String args = getArgs();
-		configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, args);
+		//configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, args);
 
 		String vmargs = getVmArgs();
-		configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmargs);
+		//configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmargs);
 
 		configuration.setAttribute(IPDELauncherConstants.CONFIG_GENERATE_DEFAULT, false);
 		configuration.setAttribute(IPDELauncherConstants.CONFIG_TEMPLATE_LOCATION, "${notes_rcp_base}/config.ini");

@@ -43,7 +43,7 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 
 	private String getArgs() {
 		
-		String res = "org/openntf/xsp/sdk/launcher/designerargs.txt";
+		String res = "org/openntf/xsp/sdk/launcher/designer11args.txt";
 		return EclipseLaunchUtil.readResource(res);
 		
 	}
@@ -51,7 +51,7 @@ public class DesignerLaunchTabGroup extends EclipseLauncherTabGroup {
 
 	private String getVmArgs() {
 
-		String res = "org/openntf/xsp/sdk/launcher/designervmargs.txt";
+		String res = "org/openntf/xsp/sdk/launcher/designer11vmargs.txt";
 		return EclipseLaunchUtil.readResource(res);
 
 	}

@@ -1,0 +1,15 @@
+${build_files}-Xshareclasses
+-Xss1m
+-Drcp.home=${notes_install}\framework
+-Dcom.ibm.rcp.install.id=1401453279265
+-Drcp.install.config=user
+-Dosgi.install.area=${notes_install}\framework\eclipse
+-Dcom.ibm.pvc.osgiagent.core.logfileloc=${notes_install}\framework\rcp
+-Dcom.ibm.pvc.webcontainer.port=0
+-Declipse.pluginCustomization=${notes_install}\framework\rcp\plugin_customization.ini
+-Declipse.registry.nulltoken=true
+-Djava.protocol.handler.pkgs=com.ibm.net.ssl.www.protocol
+-Djava.util.logging.config.class=com.ibm.rcp.core.internal.logger.boot.LoggerConfig
+-Dosgi.hook.configurators.exclude=org.eclipse.core.runtime.internal.adaptor.EclipseLogHook
+-Dosgi.framework.extensions=com.ibm.rcp.core.logger.frameworkhook
+"-Xbootclasspath/a:${notes_rcp_base}\rcpbootcp.jar;"
